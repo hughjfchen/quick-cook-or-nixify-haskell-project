@@ -22,13 +22,9 @@ fi
 
 begin_banner "Top level" "project cooking"
 
-mkdir -p "$1/$2"
+"${SCRIPT_ABS_PATH}"/prepare-env/do.sh
 
-cd "$1/$2"
-
-"${SCRIPT_ABS_PATH}/prepare-env/do.sh"
-
-#"${SCRIPT_ABS_PATH}/project-scaffold/do.sh"
+"${SCRIPT_ABS_PATH}"/project-scaffold/do.sh "$1" "$2"
 
 cp -R "${SCRIPT_ABS_PATH}"/build-framework/* "$1/$2/"
 
@@ -46,7 +42,7 @@ set +u
 [[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
 set -u
 
-nix-shell -p haskellPackages.niv --run "niv update"
+nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv update"
 
 # everything's done
 done_banner "Top level" "project cooking"
