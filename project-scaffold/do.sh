@@ -15,7 +15,11 @@ set +u
 [[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
 set -u
 
-nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
-#nix-shell '<nixpkgs>' -p hello --run "mkdir -p $1; cd $1; echo $2; hello"
+#nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
+#nix-shell '<nixpkgs>' -p hello --run "mkdir -p $1; cd $1; mkdir $2; hello"
+SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
+mkdir -p "$1"
+cd "$1"
+"${SCRIPT_ABS_PATH}"/summon new "$2"
 
 done_banner "Top level" "project scaffold"

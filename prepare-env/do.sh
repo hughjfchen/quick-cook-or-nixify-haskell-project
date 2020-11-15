@@ -24,7 +24,8 @@ get_last_stable_nix_channel () {
 
 switch_to_last_stable_nix_channel () {
     nix-channel --remove nixpkgs
-    nix-channel --add "https://nixos.org/channels/$(get_last_stable_nix_channel)" nixpkgs
+    # use the TUNA mirror instead
+    nix-channel --add "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/$(get_last_stable_nix_channel)" nixpkgs
     nix-channel --update
 }
 
@@ -55,6 +56,20 @@ if ! type nix-build >/dev/null 2>&1; then
     . $HOME/.nix-profile/etc/profile.d/nix.sh
     set -u
     switch_to_last_stable_nix_channel
+fi
+
+# add iohk binary cache
+# So slow to access the hydra.iohk.io from China, comment it out first
+#if ! [ -f ~/.config/nix/nix.conf ] || ! grep "hydra.iohk.io" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
+#  mkdir -p ~/.config/nix
+#  echo "trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" >> ~/.config/nix/nix.conf
+#  echo "substituters = https://hydra.iohk.io" >> ~/.config/nix/nix.conf
+#fi
+
+# in Chian, use the TUNA mirror for Nix binary cache
+if ! [ -f ~/.config/nix/nix.conf ] || ! grep "mirrors.tuna.tsinghua.edu.cn" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
+  mkdir -p ~/.config/nix
+  echo "substituters = https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store https://cache.nixos.org/" >> ~/.config/nix/nix.conf
 fi
 
 #if ! type patchelf >/dev/null 2>&1; then
