@@ -42,7 +42,8 @@ set +u
 [[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
 set -u
 
-nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init; niv add input-output-hk/haskell.nix"
+MY_CHANNEL=$(nix-channel --list | awk -F"/" '{print $NF}')
+nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init -b ${MY_CHANNEL};  niv add input-output-hk/haskell.nix"
 
 # everything's done
 done_banner "Top level" "project cooking"

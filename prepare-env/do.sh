@@ -18,14 +18,13 @@ get_last_stable_nix_channel () {
       Darwin) MY_CHANNEL_NAME_REGEX='s/.*\(nixpkgs-[0-9][0-9].[0-9][0-9]-darwin\).*/\1/p' ;;
       *) ;;
     esac
-    local MY_LAST_NIX_STABLE_CHANNEL=$(git ls-remote --heads https://github.com/NixOS/nixpkgs-channels | awk '{print $NF}' | awk -F"/" '{print $NF}' | grep -v "\-unstable" | grep -v "\-small" | sed -n ${MY_CHANNEL_NAME_REGEX} | sort | tail -1)
+    local MY_LAST_NIX_STABLE_CHANNEL=$(git ls-remote --heads https://github.com/NixOS/nixpkgs | awk '{print $NF}' | awk -F"/" '{print $NF}' | grep -v "\-unstable" | grep -v "\-small" | sed -n ${MY_CHANNEL_NAME_REGEX} | sort | tail -1)
     echo ${MY_LAST_NIX_STABLE_CHANNEL}
 }
 
 switch_to_last_stable_nix_channel () {
     nix-channel --remove nixpkgs
-    # use the TUNA mirror instead
-    nix-channel --add "https://mirrors.tuna.tsinghua.edu.cn/nix-channels/$(get_last_stable_nix_channel)" nixpkgs
+    nix-channel --add "https://nixos.org/channels/$(get_last_stable_nix_channel)" nixpkgs
     nix-channel --update
 }
 
@@ -59,18 +58,17 @@ if ! type nix-build >/dev/null 2>&1; then
 fi
 
 # add iohk binary cache
-# So slow to access the hydra.iohk.io from China, comment it out first
-#if ! [ -f ~/.config/nix/nix.conf ] || ! grep "hydra.iohk.io" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
-#  mkdir -p ~/.config/nix
-#  echo "trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" >> ~/.config/nix/nix.conf
-#  echo "substituters = https://hydra.iohk.io" >> ~/.config/nix/nix.conf
-#fi
+if ! [ -f ~/.config/nix/nix.conf ] || ! grep "hydra.iohk.io" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
+  mkdir -p ~/.config/nix
+  echo "trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" >> ~/.config/nix/nix.conf
+  echo "substituters = https://hydra.iohk.io" >> ~/.config/nix/nix.conf
+fi
 
 # in Chian, use the TUNA mirror for Nix binary cache
-if ! [ -f ~/.config/nix/nix.conf ] || ! grep "mirrors.tuna.tsinghua.edu.cn" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
-  mkdir -p ~/.config/nix
-  echo "substituters = https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store https://cache.nixos.org/" >> ~/.config/nix/nix.conf
-fi
+#if ! [ -f ~/.config/nix/nix.conf ] || ! grep "mirrors.tuna.tsinghua.edu.cn" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
+#  mkdir -p ~/.config/nix
+#  echo "substituters = https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store https://cache.nixos.org/" >> ~/.config/nix/nix.conf
+#fi
 
 #if ! type patchelf >/dev/null 2>&1; then
 #    info "no patchelf found, trying to install it"
