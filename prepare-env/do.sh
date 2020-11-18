@@ -11,23 +11,6 @@ init_with_root_or_sudo "$0"
 
 begin_banner "Top level" "project env prepare"
 
-get_last_stable_nix_channel () {
-    local MY_CHANNEL_NAME_REGEX=""
-    case ${THE_DISTRIBUTION_ID} in
-      debian|ubuntu|rhel|centos) MY_CHANNEL_NAME_REGEX='s/.*\(nixos-[0-9][0-9].[0-9][0-9]\).*/\1/p' ;;
-      Darwin) MY_CHANNEL_NAME_REGEX='s/.*\(nixpkgs-[0-9][0-9].[0-9][0-9]-darwin\).*/\1/p' ;;
-      *) ;;
-    esac
-    local MY_LAST_NIX_STABLE_CHANNEL=$(git ls-remote --heads https://github.com/NixOS/nixpkgs | awk '{print $NF}' | awk -F"/" '{print $NF}' | grep -v "\-unstable" | grep -v "\-small" | sed -n ${MY_CHANNEL_NAME_REGEX} | sort | tail -1)
-    echo ${MY_LAST_NIX_STABLE_CHANNEL}
-}
-
-switch_to_last_stable_nix_channel () {
-    nix-channel --remove nixpkgs
-    nix-channel --add "https://nixos.org/channels/$(get_last_stable_nix_channel)" nixpkgs
-    nix-channel --update
-}
-
 set +u
 [[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
 set -u
