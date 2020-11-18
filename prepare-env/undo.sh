@@ -27,6 +27,7 @@ if type nix-build >/dev/null 2>&1; then
     sudo rm -fr $HOME/.nix-defexpr
     sudo rm -fr $HOME/.nix-profile
     [[ -f $HOME/.config/nix/nix.conf ]] && sudo rm -fr $HOME/.config/nix/nix.conf
+    [[ -d $HOME/.cache/nix ]] && sudo rm -fr $HOME/.cache/nix
     [[ -f $HOME/.profile ]] && sed -i.nix.uninstall.bak '/.nix-profile/d' $HOME/.profile
     [[ -f $HOME/.bash_profile ]] && sed -i.nix.uninstall.bak '/.nix-profile/d' $HOME/.bash_profile
     [[ -f $HOME/.bashrc ]] && sed -i.nix.uninstall.bak '/.nix-profile/d' $HOME/.bashrc
