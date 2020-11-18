@@ -26,24 +26,7 @@ begin_banner "Top level" "project cooking"
 
 "${SCRIPT_ABS_PATH}"/project-scaffold/do.sh "$1" "$2"
 
-cp -R "${SCRIPT_ABS_PATH}"/build-framework/* "$1/$2/"
-
-for FILE_TO_SED in $(grep -R MY_PROJECT_NAME "$1/$2/"*|awk -F":" '{print $1}'|sort|uniq)
-do
-   sed -i.bak.for.sed.inplace.edit "s/MY_PROJECT_NAME/$2/g" ${FILE_TO_SED}
-   rm -fr ${FILE_TO_SED}.bak.for.sed.inplace.edit
-done
-
-#update index-state in the cabal.project file
-echo "index-state : $(date +%Y-%m-%dT00:00:00Z)" > "$1/$2"/cabal.project
-
-#update niv sources list
-set +u
-[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
-set -u
-
-MY_CHANNEL=$(nix-channel --list | awk -F"/" '{print $NF}')
-nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init -b ${MY_CHANNEL};  niv add input-output-hk/haskell.nix"
+"${SCRIPT_ABS_PATH}"/build-framework/do.sh "$1" "$2"
 
 # everything's done
 done_banner "Top level" "project cooking"
