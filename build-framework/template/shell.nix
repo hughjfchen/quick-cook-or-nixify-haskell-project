@@ -3,7 +3,7 @@
   defaultPlatformProject.MY_PROJECT_NAME.shellFor {
     # Include only the *local* packages of your project.
     packages = ps: with ps; [
-      #pkga
+      MY_PROJECT_NAME
       #pkgb
     ];
 

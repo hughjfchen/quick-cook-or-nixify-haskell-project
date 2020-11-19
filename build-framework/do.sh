@@ -23,6 +23,10 @@ done
 #update index-state in the cabal.project file
 echo "packages : ." > "$1/$2"/cabal.project
 echo "index-state : $(date +%Y-%m-%dT00:00:00Z)" >> "$1/$2"/cabal.project
+# touch a cabal.project.local to make sure emacs dante use new-impure-nix build method
+touch "$1/$2"/cabal.project.local
+# also for emacs dante target
+echo "((nil . ((dante-target . \"exe:$2\"))))" > "$1/$2"/.dir-locals.el
 
 #update niv sources list
 set +u
