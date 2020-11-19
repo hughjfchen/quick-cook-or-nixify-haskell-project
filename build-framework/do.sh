@@ -38,23 +38,27 @@ case ${THE_DISTRIBUTION_ID} in
     cd $1/$2
     "${SCRIPT_ABS_PATH}"/niv init --no-nixpkgs
     # following is for Linux
-    "${SCRIPT_ABS_PATH}"/niv add nixpkgs -b "nixos-${MY_CHANNEL_NUM}"
+    "${SCRIPT_ABS_PATH}"/niv add NixOS/nixpkgs -n nixpkgs -b "nixos-${MY_CHANNEL_NUM}"
     # following is for OSX
-    "${SCRIPT_ABS_PATH}"/niv add nixpkgs-darwin -b "nixpkgs-${MY_CHANNEL_NUM}-darwin"
+    "${SCRIPT_ABS_PATH}"/niv add NixOS/nixpkgs -n nixpkgs-darwin -b "nixpkgs-${MY_CHANNEL_NUM}-darwin"
     "${SCRIPT_ABS_PATH}"/niv add input-output-hk/haskell.nix
     ;;
   *)
-    nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init --no-nixpkgs; niv add nixpkgs -b nixos-${MY_CHANNEL}; niv add nixpkgs-darwin -b nixpkgs-${MY_CHANNEL_NUM}-darwin; niv add input-output-hk/haskell.nix"
+    nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init --no-nixpkgs; niv add NixOS/nixpkgs -n nixpkgs -b nixos-${MY_CHANNEL}; niv add NixOS/nixpkgs -n nixpkgs-darwin -b nixpkgs-${MY_CHANNEL_NUM}-darwin; niv add input-output-hk/haskell.nix"
     ;;
 esac
 
 # set the nixpkgs to the latest stable channel in the nix file
-# also set the ghc version accordingly.
+# also set the ghc version and cabal version accordingly.
 MY_NIXPKGS=$(echo "${MY_CHANNEL}" | sed 's/\-darwin//g' | sed 's/nixos/nixpkgs/g' | sed 's/\.//g')
-MY_GHC_VER=$(nix-env -f "<nixpkgs>" -qa ghc | sed 's/\-//g' | sed 's/\.//g')
+MY_NIXPKGS_URL=$(NIX_PATH="mypkg=$1/$2/nix/sources.nix" nix-instantiate --eval  -E '(import <mypkg>).nixpkgs.url' | sed 's/\(^"\)\(.*\)\("$\)/\2/g')
+MY_GHC_VER=$(nix-env -f "${MY_NIXPKGS_URL}" --quiet -qa ghc | sed 's/\-//g' | sed 's/\.//g')
+MY_CABAL_VER=$(nix-env -f "${MY_NIXPKGS_URL}" --quiet -qa cabal-install | awk -F"-" '{print $NF}') 
 sed -i.bak.for.replace.my_nixpkgs "s/MY_NIXPKGS/${MY_NIXPKGS}/g" "$1/$2/default.nix"
 sed -i.bak.for.replace.my_ghc_ver "s/MY_GHC_VER/${MY_GHC_VER}/g" "$1/$2/default.nix"
+sed -i.bak.for.replace.my_cabal_ver "s/MY_CABAL_VER/${MY_CABAL_VER}/g" "$1/$2/shell.nix"
 rm -fr "$1/$2"/default.nix.bak.for.replace.my_nixpkgs
 rm -fr "$1/$2"/default.nix.bak.for.replace.my_ghc_ver
+rm -fr "$1/$2"/shell.nix.bak.for.replace.my_cabal_ver
 
 done_banner "Top level" "build framework"
