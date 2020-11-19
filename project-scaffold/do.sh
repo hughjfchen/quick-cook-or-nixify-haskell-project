@@ -23,8 +23,8 @@ case ${THE_DISTRIBUTION_ID} in
     "${SCRIPT_ABS_PATH}"/summon new "$2"
     ;;
   *)
-    nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
-    #nix-shell '<nixpkgs>' -p hello --run "mkdir -p $1/$2; hello"
+    #nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
+    nix-shell '<nixpkgs>' -p hello --run "mkdir -p $1/$2; hello"
     ;;
 esac
 

@@ -5,7 +5,7 @@ let
   # haskell.nix provides access to the nixpkgs pins which are used by our CI, hence
   # you will be more likely to get cache hits when using these.
   # But you can also just use your own, e.g. '<nixpkgs>'
-  nixpkgsSrc = if builtins.currentSystem == "x86_64-darwin" then haskellNix.sources.MY_NIXPKGS-darwin else haskellNix.sources.MY_NIXPKGS;
+  nixpkgsSrc = if haskellNix.pkgs.lib.strings.hasSuffix builtins.currentSystem "darwin" then sources.nixpkgs-darwin else haskellNix.sources.MY_NIXPKGS;
   # haskell.nix provides some arguments to be passed to nixpkgs, including some patches
   # and also the haskell.nix functionality itself as an overlay.
   nixpkgsArgs = haskellNix.nixpkgsArgs;
@@ -39,7 +39,7 @@ rec {
       ];
     });
 
-  MY_PROJECT_NAME-exe = MY_PROJECT_NAME.components.exes.MY_PROJECT_NAME;
+  MY_PROJECT_NAME-exe = MY_PROJECT_NAME.MY_PROJECT_NAME.components.exes.MY_PROJECT_NAME;
 
   #hello = (pkgs.haskell-nix.hackage-package {
       #name = "hello";

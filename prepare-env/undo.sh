@@ -54,6 +54,6 @@ fi
 #    esac
 #fi
 
-info "Now, you should logout and login back to let the uninstall take effect."
+info "Now, you should logout and log back in to let the uninstall take effect."
 
 done_banner "Top level" "project env unprepare"

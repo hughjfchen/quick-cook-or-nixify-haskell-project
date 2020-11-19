@@ -32,19 +32,23 @@ set -u
 # Pin to the latest stable channel instead
 #MY_CHANNEL=$(nix-channel --list | awk -F"/" '{print $NF}')
 MY_CHANNEL=$(get_last_stable_nix_channel)
+MY_CHANNEL_NUM=$(echo "${MY_CHANNEL}" | awk -F"-" '{print $2}')
 case ${THE_DISTRIBUTION_ID} in
   debian|ubuntu|rhel|centos)
     cd $1/$2
-    "${SCRIPT_ABS_PATH}"/niv init
-    "${SCRIPT_ABS_PATH}"/niv update nixpkgs -b ${MY_CHANNEL}
+    "${SCRIPT_ABS_PATH}"/niv init --no-nixpkgs
+    # following is for Linux
+    "${SCRIPT_ABS_PATH}"/niv add nixpkgs -b "nixos-${MY_CHANNEL_NUM}"
+    # following is for OSX
+    "${SCRIPT_ABS_PATH}"/niv add nixpkgs-darwin -b "nixpkgs-${MY_CHANNEL_NUM}-darwin"
     "${SCRIPT_ABS_PATH}"/niv add input-output-hk/haskell.nix
     ;;
   *)
-    nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init; niv update nixpkgs -b ${MY_CHANNEL}; niv add input-output-hk/haskell.nix"
+    nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init --no-nixpkgs; niv add nixpkgs -b nixos-${MY_CHANNEL}; niv add nixpkgs-darwin -b nixpkgs-${MY_CHANNEL_NUM}-darwin; niv add input-output-hk/haskell.nix"
     ;;
 esac
 
-# set the nixpkgs to the user's default channel
+# set the nixpkgs to the latest stable channel in the nix file
 # also set the ghc version accordingly.
 MY_NIXPKGS=$(echo "${MY_CHANNEL}" | sed 's/\-darwin//g' | sed 's/nixos/nixpkgs/g' | sed 's/\.//g')
 MY_GHC_VER=$(nix-env -f "<nixpkgs>" -qa ghc | sed 's/\-//g' | sed 's/\.//g')

@@ -29,6 +29,7 @@ begin_banner "Top level" "project cooking"
 "${SCRIPT_ABS_PATH}"/build-framework/do.sh "$1" "$2"
 
 # copy the common and prepare-env for CI for the generated project
+# because it may need to setup env within a CI environment
 mkdir -p "$1/$2/ci"
 cp -R "${SCRIPT_ABS_PATH}"/common "$1/$2/ci/"
 cp -R "${SCRIPT_ABS_PATH}"/prepare-env "$1/$2/ci/"
