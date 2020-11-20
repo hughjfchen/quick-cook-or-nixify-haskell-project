@@ -56,13 +56,16 @@ esac
 # also set the ghc version and cabal version accordingly.
 MY_NIXPKGS=$(echo "${MY_CHANNEL}" | sed 's/\-darwin//g' | sed 's/nixos/nixpkgs/g' | sed 's/\.//g')
 MY_NIXPKGS_URL=$(NIX_PATH="mypkg=$1/$2/nix/sources.nix" nix-instantiate --eval  -E '(import <mypkg>).nixpkgs.url' | sed 's/\(^"\)\(.*\)\("$\)/\2/g')
-MY_GHC_VER=$(nix-env -f "${MY_NIXPKGS_URL}" --quiet -qa ghc | sed 's/\-//g' | sed 's/\.//g')
-MY_CABAL_VER=$(nix-env -f "${MY_NIXPKGS_URL}" --quiet -qa cabal-install | awk -F"-" '{print $NF}') 
+MY_GHC_VER=$(nix-env -f "${MY_NIXPKGS_URL}" --quiet -qaP ghc -A haskellPackages | sed -n '/ghc\ /p' | awk '{print $NF}' | sed 's/\-//g' | sed 's/\.//g')
+MY_CABAL_VER=$(nix-env -f "${MY_NIXPKGS_URL}" --quiet -qaP cabal-install -A haskellPackages | sed -n '/cabal\-install\ /p' | awk '{print $NF}' | awk -F"-" '{print $NF}') 
+MY_HLINT_VER=$(nix-env -f "${MY_NIXPKGS_URL}" --quiet -qaP hlint -A haskellPackages | sed -n '/hlint\ /p' | awk '{print $NF}' | awk -F"-" '{print $NF}') 
 sed -i.bak.for.replace.my_nixpkgs "s/MY_NIXPKGS/${MY_NIXPKGS}/g" "$1/$2/default.nix"
 sed -i.bak.for.replace.my_ghc_ver "s/MY_GHC_VER/${MY_GHC_VER}/g" "$1/$2/default.nix"
 sed -i.bak.for.replace.my_cabal_ver "s/MY_CABAL_VER/${MY_CABAL_VER}/g" "$1/$2/shell.nix"
+sed -i.bak.for.replace.my_hlint_ver "s/MY_HLINT_VER/${MY_HLINT_VER}/g" "$1/$2/shell.nix"
 rm -fr "$1/$2"/default.nix.bak.for.replace.my_nixpkgs
 rm -fr "$1/$2"/default.nix.bak.for.replace.my_ghc_ver
 rm -fr "$1/$2"/shell.nix.bak.for.replace.my_cabal_ver
+rm -fr "$1/$2"/shell.nix.bak.for.replace.my_hlint_ver
 
 done_banner "Top level" "build framework"
