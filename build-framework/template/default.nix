@@ -35,7 +35,7 @@ rec {
       # 'ghc' option is deprecated
       #ghc = pkgs.buildPackages.pkgs.haskell-nix.compiler.${haskellCompiler};
       modules = [
-        { dontStrip = false; }
+        { packages.MY_PROJECT_NAME.dontStrip = false; }
       ];
     });
 
