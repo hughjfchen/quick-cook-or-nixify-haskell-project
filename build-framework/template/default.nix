@@ -31,6 +31,7 @@ rec {
         name = "MY_PROJECT_NAME";
         src = ./.;
       };
+      index-state: "MY_INDEX_STATE";
       compiler-nix-name = haskellCompiler;
       # 'ghc' option is deprecated
       #ghc = pkgs.buildPackages.pkgs.haskell-nix.compiler.${haskellCompiler};

@@ -20,9 +20,10 @@ do
    rm -fr ${FILE_TO_SED}.bak.for.sed.inplace.edit
 done
 
+MY_INDEX_STATE=$(date +%Y-%m-%dT00:00:00Z)
 #update index-state in the cabal.project file
 echo "packages : ." > "$1/$2"/cabal.project
-echo "index-state : $(date +%Y-%m-%dT00:00:00Z)" >> "$1/$2"/cabal.project
+echo "index-state : ${MY_INDEX_STATE}" >> "$1/$2"/cabal.project
 # touch a cabal.project.local to make sure emacs dante use new-impure-nix build method
 touch "$1/$2"/cabal.project.local
 # also for emacs dante target
@@ -61,10 +62,12 @@ MY_CABAL_VER=$(nix-env -f "${MY_NIXPKGS_URL}" --quiet -qaP cabal-install -A hask
 MY_HLINT_VER=$(nix-env -f "${MY_NIXPKGS_URL}" --quiet -qaP hlint -A haskellPackages | sed -n '/hlint\ /p' | awk '{print $NF}' | awk -F"-" '{print $NF}') 
 sed -i.bak.for.replace.my_nixpkgs "s/MY_NIXPKGS/${MY_NIXPKGS}/g" "$1/$2/default.nix"
 sed -i.bak.for.replace.my_ghc_ver "s/MY_GHC_VER/${MY_GHC_VER}/g" "$1/$2/default.nix"
+sed -i.bak.for.replace.my_index_state "s/MY_INDEX_STATE/${MY_INDEX_STATE}/g" "$1/$2/default.nix"
 sed -i.bak.for.replace.my_cabal_ver "s/MY_CABAL_VER/${MY_CABAL_VER}/g" "$1/$2/shell.nix"
 sed -i.bak.for.replace.my_hlint_ver "s/MY_HLINT_VER/${MY_HLINT_VER}/g" "$1/$2/shell.nix"
 rm -fr "$1/$2"/default.nix.bak.for.replace.my_nixpkgs
 rm -fr "$1/$2"/default.nix.bak.for.replace.my_ghc_ver
+rm -fr "$1/$2"/default.nix.bak.for.replace.my_index_state
 rm -fr "$1/$2"/shell.nix.bak.for.replace.my_cabal_ver
 rm -fr "$1/$2"/shell.nix.bak.for.replace.my_hlint_ver
 
