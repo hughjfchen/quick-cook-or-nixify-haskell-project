@@ -1,3 +1,5 @@
+#+HUGO_BASE_DIR: ./
+
 #+TITLE: Readme
 #+AUTHOR: Hugh JF Chen
 #+DATE: 2020-12-18
@@ -22,7 +24,7 @@ Following these steps to use this tool:
 
 1. clone the repository.
 2. run the following command under the clone directory:
-   #+begin_verse
-~./cook.sh <the directory where the project will be put> <the name of the project>~
-   #+end_verse
+   #+begin_src sh
+/cook.sh <the directory where the project will be put> <the name of the project>
+   #+end_src
 3. follow the prompt of the screen til everything is done.
