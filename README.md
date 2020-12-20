@@ -1,13 +1,13 @@
 
 # Table of Contents
 
-1.  [Features](#orgb017117)
-2.  [Usage](#orgfe72e6e)
+1.  [Features](#org0f3b7ad)
+2.  [Usage](#org52f25fc)
 
 This is a tool which can help you generate a haskell project which uses the haskell.nix as the build framework.
 
 
-<a id="orgb017117"></a>
+<a id="org0f3b7ad"></a>
 
 # Features
 
@@ -22,7 +22,7 @@ This tool has following features at this moment:
     -   **docker.nix:** this file can be used to build a docker image for the project
 
 
-<a id="orgfe72e6e"></a>
+<a id="org52f25fc"></a>
 
 # Usage
 
