@@ -67,4 +67,4 @@ Besides the ~shell.nix~, this tool also generates some other files to help you q
 * Todos
 
 Following are the incomplete list of the features I want to implement in near future:
-- Add github action CI support
+- Add github action CI support based on ~haskell.nix~
