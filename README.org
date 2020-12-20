@@ -46,7 +46,7 @@ This tool generates the ready to go build framework for the generated project wi
 
 - It pinned the ~haskell.nix~ version to the current date with the ~niv~ tool
 - It uses the ~nixpkgs~ source from the ~haskell.nix~ within the ~default.nix~ file and set the ~nixpkgs~ version to the latest stable nix channel
-- It sets the ghc version to the default one from the latest stable nix channel
+- It sets the ~ghc~ version to the default one from the latest stable nix channel
 - It sets the ~index-state~ for the project within the ~default.nix~ to the current date
 - It generate a ~shell.nix~ file with following features:
   + With the ~hoogle~ tool enabled
@@ -55,3 +55,16 @@ This tool generates the ready to go build framework for the generated project wi
 - It generate the ~cross-build.nix~ file which will build the fully static binary linked with ~musl~ library by default. If you would like to cross build for other platforms, check the =nix/cross-build/systems.nix= and comment out for which platforms you want
 - It also generates a ~docker.nix~ file which can be used to build a docker image
 - It also comes with overlay support. If you want to override some packages within the ~hackage~ database, you can add a ~nix~ file for this package under the directory =nix/overlay= and it will be picked up automatically.
+
+* Setup development environment
+
+Besides the ~shell.nix~, this tool also generates some other files to help you quick start the development:
+- The tool assumes you will use ~emacs~ with ~haskell-mode~ and ~dante~ combination as the development environment. If you use other tools, you need to figure out how to setup the development environment yourself.
+- The tool will generate a ~cabal.project~ file with the ~index-state~ set to the current date.
+- The tool will generate a ~cabal.project.local~ to make sure the ~dante~ will use the new style cabal commands.
+- The tool will also generate a ~.dir-locals.el~ and set the ~dante~ target to the executable of the project name.
+
+* Todos
+
+Following are the incomplete list of the features I want to implement in near future:
+- Add github action CI support
