@@ -64,6 +64,8 @@ Besides the ~shell.nix~, this tool also generates some other files to help you q
 - The tool will generate a ~cabal.project.local~ to make sure the ~dante~ will use the new style cabal commands.
 - The tool will also generate a ~.dir-locals.el~ and set the ~dante~ target to the executable of the project name.
 
+With above files in place, you can just run the =nix-shell= under the project directory to enter a ~nix-shell~ and start ~emacs~ within the ~nix-shell~ and start to code.
+
 * Todos
 
 Following are the incomplete list of the features I want to implement in near future:

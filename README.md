@@ -1,19 +1,19 @@
 
 # Table of Contents
 
-1.  [Features](#orga4b2e82)
-2.  [Usage](#orgbb98d36)
-3.  [How does it work](#orge01866d)
-    1.  [Nix provision](#orgc64f3b2)
-    2.  [Generate haskell project](#org1986ed2)
-    3.  [Generate the build framework based on the `haskell.nix` infrastructure](#orgaea5c02)
-4.  [Setup development environment](#org8f70da6)
-5.  [Todos](#org461794a)
+1.  [Features](#orgec2f94b)
+2.  [Usage](#org10104b4)
+3.  [How does it work](#org57faf3d)
+    1.  [Nix provision](#orgd86a59c)
+    2.  [Generate haskell project](#org0ae1472)
+    3.  [Generate the build framework based on the `haskell.nix` infrastructure](#org8bf4e25)
+4.  [Setup development environment](#org3ab1897)
+5.  [Todos](#org4765234)
 
 This is a tool which can help you generate a haskell project with the haskell.nix as the build framework.
 
 
-<a id="orga4b2e82"></a>
+<a id="orgec2f94b"></a>
 
 # Features
 
@@ -29,7 +29,7 @@ This tool has following features at this moment:
     -   **docker.nix:** this file can be used to build a docker image for the project
 
 
-<a id="orgbb98d36"></a>
+<a id="org10104b4"></a>
 
 # Usage
 
@@ -42,26 +42,26 @@ Following these steps to use this tool:
 3.  follow the prompt of the screen til everything is done.
 
 
-<a id="orge01866d"></a>
+<a id="org57faf3d"></a>
 
 # How does it work
 
 
-<a id="orgc64f3b2"></a>
+<a id="orgd86a59c"></a>
 
 ## Nix provision
 
 This tool will check if `nix` present on the running machine, if not, it will connect to the official `nix` web site and install `nix` first, it also set the default `nix` channel to the latest stable one.
 
 
-<a id="org1986ed2"></a>
+<a id="org0ae1472"></a>
 
 ## Generate haskell project
 
 This tool uses the `summoner` to do this job, for more information during the project generation, please refer to the [official site](https://github.com/kowainik/summoner).
 
 
-<a id="orgaea5c02"></a>
+<a id="org8bf4e25"></a>
 
 ## Generate the build framework based on the `haskell.nix` infrastructure
 
@@ -80,7 +80,7 @@ This tool generates the ready to go build framework for the generated project wi
 -   It also comes with overlay support. If you want to override some packages within the `hackage` database, you can add a `nix` file for this package under the directory `nix/overlay` and it will be picked up automatically.
 
 
-<a id="org8f70da6"></a>
+<a id="org3ab1897"></a>
 
 # Setup development environment
 
@@ -91,8 +91,10 @@ Besides the `shell.nix`, this tool also generates some other files to help you q
 -   The tool will generate a `cabal.project.local` to make sure the `dante` will use the new style cabal commands.
 -   The tool will also generate a `.dir-locals.el` and set the `dante` target to the executable of the project name.
 
+With above files in place, you can just run the `nix-shell` under the project directory to enter a `nix-shell` and start `emacs` within the `nix-shell` and start to code.
 
-<a id="org461794a"></a>
+
+<a id="org4765234"></a>
 
 # Todos
 
