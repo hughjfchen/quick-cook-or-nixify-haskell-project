@@ -11,7 +11,7 @@ This is a tool which can help you generate a haskell project with the haskell.ni
 
 This tool has following features at this moment:
 - install nix if needed
-- multiple platforms supported(currently linux and macos are supported, windows with WSL may work but not tested)
+- multiple platforms supported(currently ~linux~ and ~macos~ are supported, ~windows~ with ~WSL~ may work but not tested)
 - generate haskell project with the summoner tool
 - generate most usable nix files, including:
   - default.nix :: this is the major nix file which is used by all other nix files.

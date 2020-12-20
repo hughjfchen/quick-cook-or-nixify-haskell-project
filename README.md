@@ -1,26 +1,26 @@
 
 # Table of Contents
 
-1.  [Features](#orgec2f94b)
-2.  [Usage](#org10104b4)
-3.  [How does it work](#org57faf3d)
-    1.  [Nix provision](#orgd86a59c)
-    2.  [Generate haskell project](#org0ae1472)
-    3.  [Generate the build framework based on the `haskell.nix` infrastructure](#org8bf4e25)
-4.  [Setup development environment](#org3ab1897)
-5.  [Todos](#org4765234)
+1.  [Features](#org75f7d94)
+2.  [Usage](#orgbccd27c)
+3.  [How does it work](#org9c1b616)
+    1.  [Nix provision](#org67ee641)
+    2.  [Generate haskell project](#org2abb852)
+    3.  [Generate the build framework based on the `haskell.nix` infrastructure](#orgd6761d9)
+4.  [Setup development environment](#orgde61daf)
+5.  [Todos](#org4808d1d)
 
 This is a tool which can help you generate a haskell project with the haskell.nix as the build framework.
 
 
-<a id="orgec2f94b"></a>
+<a id="org75f7d94"></a>
 
 # Features
 
 This tool has following features at this moment:
 
 -   install nix if needed
--   multiple platforms supported(currently linux and macos are supported, windows with WSL may work but not tested)
+-   multiple platforms supported(currently `linux` and `macos` are supported, `windows` with `WSL` may work but not tested)
 -   generate haskell project with the summoner tool
 -   generate most usable nix files, including:
     -   **default.nix:** this is the major nix file which is used by all other nix files.
@@ -29,7 +29,7 @@ This tool has following features at this moment:
     -   **docker.nix:** this file can be used to build a docker image for the project
 
 
-<a id="org10104b4"></a>
+<a id="orgbccd27c"></a>
 
 # Usage
 
@@ -42,26 +42,26 @@ Following these steps to use this tool:
 3.  follow the prompt of the screen til everything is done.
 
 
-<a id="org57faf3d"></a>
+<a id="org9c1b616"></a>
 
 # How does it work
 
 
-<a id="orgd86a59c"></a>
+<a id="org67ee641"></a>
 
 ## Nix provision
 
 This tool will check if `nix` present on the running machine, if not, it will connect to the official `nix` web site and install `nix` first, it also set the default `nix` channel to the latest stable one.
 
 
-<a id="org0ae1472"></a>
+<a id="org2abb852"></a>
 
 ## Generate haskell project
 
 This tool uses the `summoner` to do this job, for more information during the project generation, please refer to the [official site](https://github.com/kowainik/summoner).
 
 
-<a id="org8bf4e25"></a>
+<a id="orgd6761d9"></a>
 
 ## Generate the build framework based on the `haskell.nix` infrastructure
 
@@ -80,7 +80,7 @@ This tool generates the ready to go build framework for the generated project wi
 -   It also comes with overlay support. If you want to override some packages within the `hackage` database, you can add a `nix` file for this package under the directory `nix/overlay` and it will be picked up automatically.
 
 
-<a id="org3ab1897"></a>
+<a id="orgde61daf"></a>
 
 # Setup development environment
 
@@ -94,7 +94,7 @@ Besides the `shell.nix`, this tool also generates some other files to help you q
 With above files in place, you can just run the `nix-shell` under the project directory to enter a `nix-shell` and start `emacs` within the `nix-shell` and start to code.
 
 
-<a id="org4765234"></a>
+<a id="org4808d1d"></a>
 
 # Todos
 
