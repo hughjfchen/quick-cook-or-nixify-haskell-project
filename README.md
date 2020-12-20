@@ -1,13 +1,13 @@
 
 # Table of Contents
 
-1.  [Features](#org87edada)
-2.  [Usage](#orgc7dd06a)
+1.  [Features](#orgb017117)
+2.  [Usage](#orgfe72e6e)
 
 This is a tool which can help you generate a haskell project which uses the haskell.nix as the build framework.
 
 
-<a id="org87edada"></a>
+<a id="orgb017117"></a>
 
 # Features
 
@@ -22,16 +22,16 @@ This tool has following features at this moment:
     -   **docker.nix:** this file can be used to build a docker image for the project
 
 
-<a id="orgc7dd06a"></a>
+<a id="orgfe72e6e"></a>
 
 # Usage
 
 Following these steps to use this tool:
 
-1.  clone the repository
+1.  clone the repository.
 2.  run the following command under the clone directory:
-    
-    <p class="verse">
-    ./cook.sh <the porject directory> <the project name><br />
-    </p>
+
+    ./cook.sh <the directory where the project will be put> <the name of the project>
+
+1.  follow the prompt of the screen til everything is done.
 

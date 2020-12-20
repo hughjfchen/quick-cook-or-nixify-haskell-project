@@ -20,8 +20,9 @@ This tool has following features at this moment:
 
 Following these steps to use this tool:
 
-1. clone the repository
+1. clone the repository.
 2. run the following command under the clone directory:
-   #+begin_verse
-./cook.sh <the porject directory> <the project name>
-   #+end_verse
+#+begin_src shell :exports source
+./cook.sh <the directory where the project will be put> <the name of the project>
+#+end_src
+3. follow the prompt of the screen til everything is done.
