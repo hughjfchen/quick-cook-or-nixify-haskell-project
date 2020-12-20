@@ -1,19 +1,19 @@
 
 # Table of Contents
 
-1.  [Features](#org75f7d94)
-2.  [Usage](#orgbccd27c)
-3.  [How does it work](#org9c1b616)
-    1.  [Nix provision](#org67ee641)
-    2.  [Generate haskell project](#org2abb852)
-    3.  [Generate the build framework based on the `haskell.nix` infrastructure](#orgd6761d9)
-4.  [Setup development environment](#orgde61daf)
-5.  [Todos](#org4808d1d)
+1.  [Features](#org0ce9921)
+2.  [Usage](#orgf31d4f8)
+3.  [How does it work](#orgbe73345)
+    1.  [Nix provision](#org5a91586)
+    2.  [Generate haskell project](#orgb570b52)
+    3.  [Generate the build framework based on the `haskell.nix` infrastructure](#orgfd77158)
+4.  [Setup development environment](#org15310b0)
+5.  [Todos](#org7e9afa5)
 
 This is a tool which can help you generate a haskell project with the haskell.nix as the build framework.
 
 
-<a id="org75f7d94"></a>
+<a id="org0ce9921"></a>
 
 # Features
 
@@ -29,7 +29,7 @@ This tool has following features at this moment:
     -   **docker.nix:** this file can be used to build a docker image for the project
 
 
-<a id="orgbccd27c"></a>
+<a id="orgf31d4f8"></a>
 
 # Usage
 
@@ -38,30 +38,30 @@ Following these steps to use this tool:
 1.  clone the repository.
 2.  run the following command under the clone directory:
     
-        /cook.sh <the directory where the project will be put> <the name of the project>
+        ./cook.sh <the directory where the project will be put> <the name of the project>
 3.  follow the prompt of the screen til everything is done.
 
 
-<a id="org9c1b616"></a>
+<a id="orgbe73345"></a>
 
 # How does it work
 
 
-<a id="org67ee641"></a>
+<a id="org5a91586"></a>
 
 ## Nix provision
 
 This tool will check if `nix` present on the running machine, if not, it will connect to the official `nix` web site and install `nix` first, it also set the default `nix` channel to the latest stable one.
 
 
-<a id="org2abb852"></a>
+<a id="orgb570b52"></a>
 
 ## Generate haskell project
 
 This tool uses the `summoner` to do this job, for more information during the project generation, please refer to the [official site](https://github.com/kowainik/summoner).
 
 
-<a id="orgd6761d9"></a>
+<a id="orgfd77158"></a>
 
 ## Generate the build framework based on the `haskell.nix` infrastructure
 
@@ -80,7 +80,7 @@ This tool generates the ready to go build framework for the generated project wi
 -   It also comes with overlay support. If you want to override some packages within the `hackage` database, you can add a `nix` file for this package under the directory `nix/overlay` and it will be picked up automatically.
 
 
-<a id="orgde61daf"></a>
+<a id="org15310b0"></a>
 
 # Setup development environment
 
@@ -94,7 +94,7 @@ Besides the `shell.nix`, this tool also generates some other files to help you q
 With above files in place, you can just run the `nix-shell` under the project directory to enter a `nix-shell` and start `emacs` within the `nix-shell` and start to code.
 
 
-<a id="org4808d1d"></a>
+<a id="org7e9afa5"></a>
 
 # Todos
 

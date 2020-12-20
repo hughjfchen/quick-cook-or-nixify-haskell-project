@@ -71,4 +71,10 @@ rm -fr "$1/$2"/default.nix.bak.for.replace.my_index_state
 rm -fr "$1/$2"/shell.nix.bak.for.replace.my_cabal_ver
 rm -fr "$1/$2"/shell.nix.bak.for.replace.my_hlint_ver
 
+# remove the cabal.project.local and .dir-locals.el from the .gitignore to make sure it can add to the git repostory
+sed -i.bak.for.deleting.cabal.project.local "/cabal.project.local/d" "$1/$2"/.gitignore
+sed -i.bak.for.deleting.dir-locals "/.dir-locals.el/d" "$1/$2"/.gitignore
+rm -fr "$1/$2"/.gitignore.bak.for.deleting.cabal.project.local
+rm -fr "$1/$2"/.gitignore.bak.for.deleting.dir-locals
+
 done_banner "Top level" "build framework"

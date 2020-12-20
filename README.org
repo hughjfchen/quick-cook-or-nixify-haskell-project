@@ -26,7 +26,7 @@ Following these steps to use this tool:
 1. clone the repository.
 2. run the following command under the clone directory:
    #+begin_src sh
-/cook.sh <the directory where the project will be put> <the name of the project>
+./cook.sh <the directory where the project will be put> <the name of the project>
    #+end_src
 3. follow the prompt of the screen til everything is done.
 
