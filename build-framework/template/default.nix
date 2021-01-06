@@ -42,11 +42,17 @@ rec {
 
   MY_PROJECT_NAME-exe = MY_PROJECT_NAME.MY_PROJECT_NAME.components.exes.MY_PROJECT_NAME;
 
-  #hello = (pkgs.haskell-nix.hackage-package {
-      #name = "hello";
+  #MY_PROJECT_NAME = (pkgs.haskell-nix.hackage-package {
+      #name = "MY_PROJECT_NAME";
       #version = "1.0.0.2";
+      #index-state: "MY_INDEX_STATE";
+      #compiler-nix-name = haskellCompiler;
+      # 'ghc' option is deprecated
       #ghc = pkgs.buildPackages.pkgs.haskell-nix.compiler.${haskellCompiler};
-    #}).components.exes.hello;
+      #modules = [
+        #{ packages.MY_PROJECT_NAME.dontStrip = false; }
+      #];
+    #}).components.exes.MY_PROJECT_NAME;
 
   #cabal-install = (pkgs.haskell-nix.hackage-package {
       #name = "cabal-install";
