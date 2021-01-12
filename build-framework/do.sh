@@ -27,7 +27,9 @@ echo "index-state : ${MY_INDEX_STATE}" >> "$1/$2"/cabal.project
 # touch a cabal.project.local to make sure emacs dante use new-impure-nix build method
 touch "$1/$2"/cabal.project.local
 # also for emacs dante target
-echo "((nil . ((dante-target . \"exe:$2\"))))" > "$1/$2"/.dir-locals.el
+echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/.dir-locals.el
+[ -d "$1/$2"/app ] && echo "((nil . ((dante-target . \"exe:$2\"))))" > "$1/$2"/app/.dir-locals.el
+[ -d "$1/$2"/test ] && echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/test/.dir-locals.el
 
 #update niv sources list
 set +u
