@@ -41,6 +41,7 @@ rec {
     });
 
   MY_PROJECT_NAME-exe = MY_PROJECT_NAME.MY_PROJECT_NAME.components.exes.MY_PROJECT_NAME;
+  MY_PROJECT_NAME-test = MY_PROJECT_NAME.MY_PROJECT_NAME.components.test.MY_PROJECT_NAME-test;
 
   #MY_PROJECT_NAME = (pkgs.haskell-nix.hackage-package {
       #name = "MY_PROJECT_NAME";
