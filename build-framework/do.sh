@@ -28,6 +28,7 @@ echo "index-state : ${MY_INDEX_STATE}" >> "$1/$2"/cabal.project
 touch "$1/$2"/cabal.project.local
 # also for emacs dante target
 echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/.dir-locals.el
+[ -d "$1/$2"/src ] && echo "((nil . ((dante-target . \"lib:$2\"))))" > "$1/$2"/src/.dir-locals.el
 [ -d "$1/$2"/app ] && echo "((nil . ((dante-target . \"exe:$2\"))))" > "$1/$2"/app/.dir-locals.el
 [ -d "$1/$2"/test ] && echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/test/.dir-locals.el
 
