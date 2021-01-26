@@ -32,6 +32,10 @@ echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/.dir-locals.el
 [ -d "$1/$2"/app ] && echo "((nil . ((dante-target . \"exe:$2\"))))" > "$1/$2"/app/.dir-locals.el
 [ -d "$1/$2"/test ] && echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/test/.dir-locals.el
 
+# setup the .ghci for great experience
+echo >> "$1/$2"/.ghci ':def hg \x -> return $ ":!hoogle \"" ++ x ++ "\""'
+echo >> "$1/$2"/.ghci ':def hgi \x -> return $ ":!hoogle --info \"" ++ x ++ "\""'
+
 #update niv sources list
 set +u
 [[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
