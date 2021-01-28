@@ -22,7 +22,7 @@
     # Some you may need to get some other way.
     buildInputs = with defaultPlatformProject.pkgs;
       #[ ghcid lorri niv ];
-      [ ghcid ];
+      [ ghcid lynx ];
 
     # Prevents cabal from choosing alternate plans, so that
     # *all* dependencies are provided by Nix.
