@@ -46,20 +46,21 @@ set -u
 #MY_CHANNEL=$(nix-channel --list | awk -F"/" '{print $NF}')
 MY_CHANNEL=$(get_last_stable_nix_channel)
 MY_CHANNEL_NUM=$(echo "${MY_CHANNEL}" | awk -F"-" '{print $2}')
-case ${THE_DISTRIBUTION_ID} in
-  debian|ubuntu|rhel|centos)
-    cd $1/$2
-    "${SCRIPT_ABS_PATH}"/niv init --no-nixpkgs
-    # following is for Linux
-    "${SCRIPT_ABS_PATH}"/niv add NixOS/nixpkgs -n nixpkgs -b "nixos-${MY_CHANNEL_NUM}"
-    # following is for OSX
-    "${SCRIPT_ABS_PATH}"/niv add NixOS/nixpkgs -n nixpkgs-darwin -b "nixpkgs-${MY_CHANNEL_NUM}-darwin"
-    "${SCRIPT_ABS_PATH}"/niv add input-output-hk/haskell.nix
-    ;;
-  *)
-    nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init --no-nixpkgs; niv add NixOS/nixpkgs -n nixpkgs -b nixos-${MY_CHANNEL}; niv add NixOS/nixpkgs -n nixpkgs-darwin -b nixpkgs-${MY_CHANNEL_NUM}-darwin; niv add input-output-hk/haskell.nix"
-    ;;
-esac
+nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init --no-nixpkgs; niv add NixOS/nixpkgs -n nixpkgs -b nixos-${MY_CHANNEL}; niv add NixOS/nixpkgs -n nixpkgs-darwin -b nixpkgs-${MY_CHANNEL_NUM}-darwin; niv add input-output-hk/haskell.nix"
+#case ${THE_DISTRIBUTION_ID} in
+#  debian|ubuntu|rhel|centos)
+#    cd $1/$2
+#    "${SCRIPT_ABS_PATH}"/niv init --no-nixpkgs
+#    # following is for Linux
+#    "${SCRIPT_ABS_PATH}"/niv add NixOS/nixpkgs -n nixpkgs -b "nixos-${MY_CHANNEL_NUM}"
+#    # following is for OSX
+#    "${SCRIPT_ABS_PATH}"/niv add NixOS/nixpkgs -n nixpkgs-darwin -b "nixpkgs-${MY_CHANNEL_NUM}-darwin"
+#    "${SCRIPT_ABS_PATH}"/niv add input-output-hk/haskell.nix
+#    ;;
+#  *)
+#    nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init --no-nixpkgs; niv add NixOS/nixpkgs -n nixpkgs -b nixos-${MY_CHANNEL}; niv add NixOS/nixpkgs -n nixpkgs-darwin -b nixpkgs-${MY_CHANNEL_NUM}-darwin; niv add input-output-hk/haskell.nix"
+#    ;;
+#esac
 
 # set the nixpkgs to the latest stable channel in the nix file
 # also set the ghc version and cabal version accordingly.
