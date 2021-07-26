@@ -9,7 +9,7 @@
 
     # Builds a Hoogle documentation index of all dependencies,
     # and provides a "hoogle" command to search the index.
-    withHoogle = false;
+    withHoogle = true;
 
     # You might want some extra tools in the shell (optional).
 
@@ -22,7 +22,7 @@
     # Some you may need to get some other way.
     buildInputs = with defaultPlatformProject.pkgs;
       #[ ghcid lorri niv ];
-      [ ];
+      [ ghcid lynx ];
 
     # Prevents cabal from choosing alternate plans, so that
     # *all* dependencies are provided by Nix.
