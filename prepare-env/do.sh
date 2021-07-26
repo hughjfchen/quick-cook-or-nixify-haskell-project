@@ -43,63 +43,14 @@ fi
 # add iohk binary cache
 if ! [ -f ~/.config/nix/nix.conf ] || ! grep "hydra.iohk.io" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
   mkdir -p ~/.config/nix
-  echo "trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" >> ~/.config/nix/nix.conf
-  echo "substituters = https://hydra.iohk.io" >> ~/.config/nix/nix.conf
+  echo "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" >> ~/.config/nix/nix.conf
+  echo "substituters = https://cache.nixos.org/ https://hydra.iohk.io" >> ~/.config/nix/nix.conf
 fi
 
-# in Chian, use the TUNA mirror for Nix binary cache
+# in China, use the TUNA mirror for Nix binary cache
 #if ! [ -f ~/.config/nix/nix.conf ] || ! grep "mirrors.tuna.tsinghua.edu.cn" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
 #  mkdir -p ~/.config/nix
 #  echo "substituters = https://mirrors.tuna.tsinghua.edu.cn/nix-channels/store https://cache.nixos.org/" >> ~/.config/nix/nix.conf
-#fi
-
-#if ! type patchelf >/dev/null 2>&1; then
-#    info "no patchelf found, trying to install it"
-#    nix-env --install patchelf
-#fi
-
-#if ! type cabal2nix >/dev/null 2>&1; then
-#    info "no cabal2nix found, trying to install it"
-#
-#    nix-env --install cabal2nix
-#fi
-
-#if ! type nix-prefetch-git >/dev/null 2>&1; then
-#    info "no nix-prefetch-git found, trying to install it"
-#    nix-env --install nix-prefetch-git
-#fi
-
-#if ! type cabal >/dev/null 2>&1; then
-#    info "no cabal-install found, trying to install it"
-#    nix-env --install cabal-install
-#fi
-
-#if ! type nodejs >/dev/null 2>&1 && ! type node >/dev/null 2>&1; then
-#    info "no nodejs found, trying to install it"
-#    case ${THE_DISTRIBUTION_ID} in
-#      debian)
-#          curl -sL https://deb.nodesource.com/setup_10.x | sudo bash -
-#          sudo apt-get update
-#          sudo apt-get install -y nodejs
-#	        ;;
-#      ubuntu)
-#          curl -sL https://deb.nodesource.com/setup_10.x | sudo -E bash -
-#          sudo apt-get update
-#          sudo apt-get install -y nodejs
-#	        ;;
-#      Darwin)
-#          if type brew > /dev/null 2>&1; then
-#              brew install node@10
-#          else
-#              curl "https://nodejs.org/dist/latest-v10.x/node-${VERSION:-$(wget -qO- https://nodejs.org/dist/latest-v10.x/ | sed -nE 's|.*>node-(.*)\.pkg</a>.*|\1|p')}.pkg" > "$HOME/Downloads/node-latest-v10.x.pkg" && sudo installer -store -pkg "$HOME/Downloads/node-latest-v10.x.pkg" -target "/"
-#          fi
-#          ;;
-#      rhel|centos)
-#          curl -sL https://rpm.nodesource.com/setup_10.x | sudo bash -
-#          sudo yum install -y nodejs
-#	        ;;
-#      *) ;;
-#    esac
 #fi
 
 done_banner "Top level" "project env prepare"
