@@ -15,19 +15,19 @@ set +u
 [[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
 set -u
 
-#case ${THE_DISTRIBUTION_ID} in
-#  debian|ubuntu|rhel|centos)
-#    SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
-#    mkdir -p "$1"
-#    cd "$1"
-#    "${SCRIPT_ABS_PATH}"/summon new "$2"
-#    ;;
-#  *)
-#    #nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
-#    nix-shell '<nixpkgs>' -p hello --run "mkdir -p $1/$2; hello"
-#    ;;
-#esac
+case ${THE_DISTRIBUTION_ID} in
+  debian|ubuntu|rhel|centos)
+    SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
+    mkdir -p "$1"
+    cd "$1"
+    "${SCRIPT_ABS_PATH}"/summon new "$2"
+    ;;
+  *)
+    #nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
+    nix-shell '<nixpkgs>' -p hello --run "mkdir -p $1/$2; hello"
+    ;;
+esac
 
-nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
+#nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
 
 done_banner "Top level" "project scaffold"
