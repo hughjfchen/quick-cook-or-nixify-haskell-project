@@ -1,0 +1,10 @@
+questions:
+  name:
+    question: What's the name of the project?
+    type: input
+    default: myproject01
+
+  description:
+    question: Project description?
+    type: input
+    default: Please refer to https://github.com/hughjfchen/myproject01 for more info.

@@ -1,0 +1,120 @@
+cabal-version:       2.4
+name:                {{name}}
+version:             0.0.0.0
+synopsis:            {{description}}.
+description:         {{description}}.
+homepage:            https://github.com/hughjfchen/{{name}}
+bug-reports:         https://github.com/hughjfchen/{{name}}/issues
+license:             MIT
+license-file:        LICENSE
+author:              Hugh JF Chen
+maintainer:          Hugh JF Chen <hugh.jf.chen@gmail.com>
+copyright:           2021 Hugh JF Chen
+category:            Network
+build-type:          Simple
+extra-doc-files:     README.md
+                     CHANGELOG.md
+tested-with:         GHC == 8.8.4
+
+source-repository head
+  type:                git
+  location:            https://github.com/hughjfchen/{{name}}.git
+
+common common-options
+  build-depends:       base-noprelude ^>= 4.13.0.0
+                     , relude ^>= 0.7.0.0
+                     , text ^>= 1.2.4.0
+                     , bytestring ^>= 0.10.10.1
+                     , mtl
+                     , transformers
+                     , containers
+                     , unordered-containers
+
+  ghc-options:         -Wall
+                       -Wcompat
+                       -Widentities
+                       -Wincomplete-uni-patterns
+                       -Wincomplete-record-updates
+  if impl(ghc >= 8.0)
+    ghc-options:       -Wredundant-constraints
+  if impl(ghc >= 8.2)
+    ghc-options:       -fhide-source-paths
+  if impl(ghc >= 8.4)
+    ghc-options:       -Wmissing-export-lists
+                       -Wpartial-fields
+  if impl(ghc >= 8.8)
+    ghc-options:       -Wmissing-deriving-strategies
+
+  default-language:    Haskell2010
+  default-extensions:  ConstraintKinds
+                       DeriveAnyClass
+                       DeriveFunctor
+                       DeriveGeneric
+                       DerivingStrategies
+                       FlexibleContexts
+                       FlexibleInstances
+                       GeneralizedNewtypeDeriving
+                       InstanceSigs
+                       KindSignatures
+                       LambdaCase
+                       MultiParamTypeClasses
+                       OverloadedStrings
+                       RecordWildCards
+                       ScopedTypeVariables
+                       StandaloneDeriving
+                       TupleSections
+                       TypeApplications
+                       ViewPatterns
+
+library
+  import:              common-options
+  hs-source-dirs:      src
+  exposed-modules:     Core.Types
+                     , Core.MyError
+                     , Core.{{ name | toPascal }}
+                     , Prelude
+                     , Has
+                     , As
+                     , Error
+                     , MonadStack
+                     , Capability.{{ name | toPascal }}
+
+executable {{name}}
+  import:              common-options
+  hs-source-dirs:      app
+  main-is:             Main.hs
+  other-modules:       Paths_{{ name | toSnake }}
+                     , CmdLine
+                     , AppM
+                     , AppEnv
+                     , AppError
+                     , AppCapability.{{ name | toPascal }}
+  build-depends:       {{name}}
+                     , optparse-applicative ^>= 0.16.1.0
+  ghc-options:         -threaded
+                       -rtsopts
+                       -with-rtsopts=-N
+
+test-suite {{name}}-test
+  import:              common-options
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      test
+  main-is:             Spec.hs
+  build-depends:       {{name}}
+                     , hspec
+                     , hedgehog
+                     , hspec-hedgehog
+  ghc-options:         -threaded
+                       -rtsopts
+                       -with-rtsopts=-N
+
+benchmark {{name}}-benchmark
+  import:              common-options
+  type:                exitcode-stdio-1.0
+  hs-source-dirs:      benchmark
+  main-is:             Main.hs
+  build-depends:       gauge
+                     , {{name}}
+  ghc-options:         -threaded
+                       -rtsopts
+                       -with-rtsopts=-N

@@ -1,0 +1,1 @@
+nix-shell --run "[[ -x ~/.emacs.d/bin/doom ]] && ~/.emacs.d/bin/doom env ; emacs -nw"
