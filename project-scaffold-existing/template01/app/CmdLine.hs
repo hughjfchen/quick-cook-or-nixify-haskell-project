@@ -19,8 +19,6 @@ import Data.Version (showVersion)
 -- | and change the parsing logic
 data CmdOptions = CmdOptions { cmdHost :: !Text
                              , cmdPort :: !Int
-                             , cmdUserName :: !Text
-                             , cmdPassword :: !Text
                              } deriving stock (Show)
 
 versionOptionParser :: Parser (a -> a)
@@ -35,24 +33,14 @@ cmdOptionsParser = CmdOptions
                <> metavar "HOST"
                <> value "localhost"
                <> showDefault
-               <> help "The hostname/IP/DNS name of the websphere dmgr.")
+               <> help "The hostname/IP/DNS name of the target.")
   <*> option auto
                ( long "port"
                <> short 'p'
                <> metavar "PORT"
                <> value 9060
                <> showDefault
-               <> help "The port number of the websphere dmgr.")
-  <*> strOption
-               ( long "username"
-               <> short 'u'
-               <> metavar "USERNAME"
-               <> help "The username for access to the websphere admin console.")
-  <*> strOption
-              ( long "password"
-              <> short 'w'
-              <> metavar "PASSWORD"
-              <> help "The password for access to the websphere admin console.")
+               <> help "The port number of the target.")
 
 cmdOptions :: ParserInfo CmdOptions
 cmdOptions = info (cmdOptionsParser <**> helper <**> versionOptionParser)

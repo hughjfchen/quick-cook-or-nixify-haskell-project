@@ -12,10 +12,12 @@ SCRIPT_ABS_PATH=$(turn_to_absolute_path $0)
 
 begin_banner "Top level" "fix up"
 
+PROJECT_PASCAL_NAME=$(cat "$1/$2/.project.pascal.name")
+PROJECT_SNAKE_NAME=$(cat "$1/$2/.project.snake.name")
 mv "$1/$2/template01.cabal" "$1/$2/$2.cabal"
-mv "$1/$2/src/Core/Template01.hs" "$1/$2/src/Core/$2.hs"
-mv "$1/$2/src/Capability/Template01.hs" "$1/$2/src/Capability/$2.hs"
-mv "$1/$2/app/AppCapability/Template01.hs" "$1/$2/app/AppCapability/$2.hs"
+mv "$1/$2/src/Core/Template01.hs" "$1/$2/src/Core/${PROJECT_PASCAL_NAME}.hs"
+mv "$1/$2/src/Capability/Template01.hs" "$1/$2/src/Capability/${PROJECT_PASCAL_NAME}.hs"
+mv "$1/$2/app/AppCapability/Template01.hs" "$1/$2/app/AppCapability/${PROJECT_PASCAL_NAME}.hs"
 
 chmod +x "$1/$2/start-dev"
 

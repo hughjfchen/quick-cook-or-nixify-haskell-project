@@ -17,7 +17,7 @@ import CmdLine (CmdOptions(..))
 data AppEnv = AppEnv {
 	envConnectionInfo :: !Text
   }
-    deriving (Has ConnectionInfo) via Field "envConnectionInfo" AppEnv
+    deriving (Has Text) via Field "envConnectionInfo" AppEnv
 
 
 mkAppEnv :: (MonadIO m) => CmdOptions -> m AppEnv
