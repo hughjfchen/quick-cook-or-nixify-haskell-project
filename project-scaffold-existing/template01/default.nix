@@ -5,13 +5,13 @@ let
   # haskell.nix provides access to the nixpkgs pins which are used by our CI, hence
   # you will be more likely to get cache hits when using these.
   # But you can also just use your own, e.g. '<nixpkgs>'
-  nixpkgsSrc = if haskellNix.pkgs.lib.strings.hasSuffix builtins.currentSystem "darwin" then sources.nixpkgs-darwin else haskellNix.sources.nixpkgs-2105;
+  nixpkgsSrc = if haskellNix.pkgs.lib.strings.hasSuffix builtins.currentSystem "darwin" then sources.nixpkgs-darwin else haskellNix.sources.nixpkgs-{{nixos_release}};
   # haskell.nix provides some arguments to be passed to nixpkgs, including some patches
   # and also the haskell.nix functionality itself as an overlay.
   nixpkgsArgs = haskellNix.nixpkgsArgs;
 in
 { nativePkgs ? import nixpkgsSrc (nixpkgsArgs // { overlays = nixpkgsArgs.overlays ++ [(import ./nix/overlay)]; })
-, haskellCompiler ? "ghc884"
+, haskellCompiler ? "ghc{{ghc_version}}"
 }:
 let pkgs = nativePkgs;
 in
@@ -28,7 +28,7 @@ rec {
         name = "{{name}}";
         src = ./.;
       };
-      #index-state = "2020-12-02T00:00:00Z";
+      index-state = "{{index_state}}";
       compiler-nix-name = haskellCompiler;
       modules = [
         { packages.{{name}}.dontStrip = false; }

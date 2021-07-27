@@ -20,9 +20,6 @@ mv "$1/$2/src/Capability/Template01.hs" "$1/$2/src/Capability/${PROJECT_PASCAL_N
 mv "$1/$2/app/AppCapability/Template01.hs" "$1/$2/app/AppCapability/${PROJECT_PASCAL_NAME}.hs"
 
 chmod +x "$1/$2/start-dev"
-
-MY_INDEX_STATE=$(date +%Y-%m-%dT00:00:00Z)
-#update index-state in the cabal.project file
-echo "index-state : ${MY_INDEX_STATE}" >> "$1/$2"/cabal.project
+find "$1/$2" -name *.sh -exec chmod +x {} \;
 
 done_banner "Top level" "fix up"
