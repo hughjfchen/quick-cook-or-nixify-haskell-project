@@ -1,1 +1,1 @@
-((nil . ((dante-target . "lib:was-supervision"))))
+((nil . ((dante-target . "lib:{{ name }}"))))
