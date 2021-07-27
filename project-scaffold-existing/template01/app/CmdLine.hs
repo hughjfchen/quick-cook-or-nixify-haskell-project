@@ -13,7 +13,10 @@ import Options.Applicative
 import Paths_{{ name | toSnake }} (version)
 import Data.Version (showVersion)
 
-
+-- | put command line options here
+-- | following are just for examples
+-- | you must put your own cmd line options 
+-- | and change the parsing logic
 data CmdOptions = CmdOptions { cmdHost :: !Text
                              , cmdPort :: !Int
                              , cmdUserName :: !Text
