@@ -8,7 +8,7 @@ fi
 . "$(dirname "$0")"/common/common.sh
 
 usage_and_exit () {
-            echo "Usage: cook.sh <project root path> <project name> <new-template|existing-template>"
+            echo "Usage: cook.sh <project root path> <project name> <generate|template>"
             exit 1
 }
 
@@ -25,8 +25,8 @@ begin_banner "Top level" "project cooking"
 "${SCRIPT_ABS_PATH}"/prepare-env/do.sh
 
 case $3 in
-  new-template)
-         "${SCRIPT_ABS_PATH}"/project-scaffold-new/do.sh "$1" "$2"
+  generate)
+         "${SCRIPT_ABS_PATH}"/project-scaffold-generate/do.sh "$1" "$2"
 
          "${SCRIPT_ABS_PATH}"/build-framework/do.sh "$1" "$2"
 
@@ -36,8 +36,8 @@ case $3 in
 	cp -R "${SCRIPT_ABS_PATH}"/common "$1/$2/ci/"
 	cp -R "${SCRIPT_ABS_PATH}"/prepare-env "$1/$2/ci/"
           ;;
-  existing-template)
-         "${SCRIPT_ABS_PATH}"/project-scaffold-existing/do.sh "$1" "$2"
+  template)
+         "${SCRIPT_ABS_PATH}"/project-scaffold-template/do.sh "$1" "$2"
 
          "${SCRIPT_ABS_PATH}"/fix-up/do.sh "$1" "$2"
 	 ;;

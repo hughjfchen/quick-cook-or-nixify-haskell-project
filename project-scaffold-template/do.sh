@@ -20,10 +20,14 @@ case ${THE_DISTRIBUTION_ID} in
     SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
     mkdir -p "$1/$2"
     cd "$1/$2"
-    TEMPLATE_PATH=$(find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}")
-    TEMPLATE_NAME=$(basename "${TEMPLATE_PATH}")
-    "${SCRIPT_ABS_PATH}"/rob add "${TEMPLATE_NAME}" "${TEMPLATE_PATH}"
-    printf "%s%s%s\n" "The template name is: " "${TEMPLATE_NAME}" ", please select that on the following question."
+    TEMPLATE_PATHS=$(find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}")
+    for TEMPLATE_PATH in "${TEMPLATE_PATHS}"
+    do
+    	TEMPLATE_NAME=$(basename "${TEMPLATE_PATH}")
+	cp "${TEMPLATE_PATH}/project.yml.orig" "${TEMPLATE_PATH}/project.yml"
+	sed -i "s/MY_PROJECT_NAME/$2/g" "${TEMPLATE_PATH}/project.yml"
+    	"${SCRIPT_ABS_PATH}"/rob add "${TEMPLATE_NAME}" "${TEMPLATE_PATH}"
+    done
     "${SCRIPT_ABS_PATH}"/rob new
     ;;
   *)
