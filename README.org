@@ -18,6 +18,9 @@ This tool has following features at this moment:
   - shell.nix :: to setup a development environment with nix-shell
   - cross-build.nix :: this nix expression can be used to build cross platform targets, including fully static binary linked with musl library
   - docker.nix :: this file can be used to build a docker image for the project
+- create project based on existing project templates with ~rob~
+  - currently there is only one existing template ~nixos2105-ghc884-indexstate20210718-haskell.nix~
+  - very easy to add new project template with new build infrastructure
 
 * Usage
 
@@ -26,7 +29,9 @@ Following these steps to use this tool:
 1. clone the repository.
 2. run the following command under the clone directory:
    #+begin_src sh
-./cook.sh <the directory where the project will be put> <the name of the project>
+./cook.sh <the directory where the project will be put> <the name of the project> <generate|template>
+ - generate means generate new project with summon
+ - template means create project based on existing template
    #+end_src
 3. follow the prompt of the screen til everything is done.
 
@@ -70,3 +75,4 @@ With above files in place, you can just run the =nix-shell= under the project di
 
 Following are the incomplete list of the features I want to implement in near future:
 - Add github action CI support based on ~haskell.nix~
+- Add more project templates
