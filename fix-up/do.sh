@@ -12,24 +12,54 @@ SCRIPT_ABS_PATH=$(turn_to_absolute_path $0)
 
 begin_banner "Top level" "fix up"
 
+# define a function to fix-up the paths based on different template name
+function fix_up_paths_based_on_template_name () {
+	local PROJECT_NAME_REAL_PATH
+  	PROJECT_NAME_REAL_PATH=$(echo "$3" | sed "s/$1/$2/g")
+  	mv "$3" "${PROJECT_NAME_REAL_PATH}"
+}
+export -f fix_up_paths_based_on_template_name
+
 PROJECT_PASCAL_NAME=$(cat "$1/$2/.project.pascal.name")
 PROJECT_SNAKE_NAME=$(cat "$1/$2/.project.snake.name")
-mv "$1/$2/template.cabal" "$1/$2/$2.cabal"
-mv "$1/$2/src/Core/Template.hs" "$1/$2/src/Core/${PROJECT_PASCAL_NAME}.hs"
-mv "$1/$2/src/Capability/Template.hs" "$1/$2/src/Capability/${PROJECT_PASCAL_NAME}.hs"
-mv "$1/$2/app/AppCapability/Template.hs" "$1/$2/app/AppCapability/${PROJECT_PASCAL_NAME}.hs"
+while read -r PROJECT_ORIG_NAME_PATH; do
+	[[ ! -z "${PROJECT_ORIG_NAME_PATH}" ]] && mv "${PROJECT_ORIG_NAME_PATH}" $(echo "${PROJECT_ORIG_NAME_PATH}" | sed "s/project.orig.name/$2/g")
+done <<< "$(find "$1/$2" -name "*project.orig.name*" ! -wholename "$1/$2/.project.orig.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
+while read -r PROJECT_SNAKE_NAME_PATH; do
+	[[ ! -z "${PROJECT_SNAKE_NAME_PATH}" ]] && mv "${PROJECT_SNAKE_NAME_PATH}" $(echo "${PROJECT_SNAKE_NAME_PATH}" | sed "s/project.snake.name/${PROJECT_SNAKE_NAME}/g")
+done <<< "$(find "$1/$2" -name "*project.snake.name*" ! -wholename "$1/$2/.project.snake.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
+while read -r PROJECT_PASCAL_NAME_PATH; do
+	[[ ! -z "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" $(echo "${PROJECT_PASCAL_NAME_PATH}" | sed "s/project.pascal.name/${PROJECT_PASCAL_NAME}/g")
+done <<< $(find "$1/$2" -name "*project.pascal.name*" ! -wholename "$1/$2/.project.pascal.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')
 
-chmod +x "$1/$2/start-dev"
+[[ -f "$1/$2/start-dev" ]] && chmod +x "$1/$2/start-dev"
 find "$1/$2" -name *.sh -exec chmod +x {} \;
+find "$1/$2" -name *.bash -exec chmod +x {} \;
+find "$1/$2" -type d -name bin -exec chmod -R +x {} \;
+
+# run the fixup for the specific template
+if [[ -f "$1/$2/fixup" ]]; then
+	MY_PWD_FOR_FIXUP="$(pwd)"
+	cd "$1/$2"
+	bash ./fixup
+	cd "${MY_PWD_FOR_FIXUP}"
+fi
+[[ -f "$1/$2/project.yml.orig" ]] && rm -fr "$1/$2/project.yml.orig"
+[[ -f "$1/$2/project.yml" ]] && rm -fr "$1/$2/project.yml"
+[[ -f "$1/$2/fixup" ]] && rm -fr "$1/$2/fixup"
+
+# define a function to handle paths which are provided by a find command
+function reverse_project_info_for_rob () {
+        local TEMPLATE_NAME
+        TEMPLATE_NAME=$(basename "$3")
+  	cp "$3/project.yml.orig" "$3/project.yml"
+  	#sed -i "s/MY_PROJECT_NAME/$2/g" "${TEMPLATE_PATH}/project.yml"
+  	#"${SCRIPT_ABS_PATH}"/../project-scaffold-template/rob remove
+}
+# export the above function so that can be used by other command or subshell
+export -f reverse_project_info_for_rob
 
 # reverse the project.yml back to orig
-TEMPLATE_PATHS=$(find "${SCRIPT_ABS_PATH}/../project-scaffold-template" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}/../project-scaffold-template")
-for TEMPLATE_PATH in "${TEMPLATE_PATHS}"
-do
-  TEMPLATE_NAME=$(basename "${TEMPLATE_PATH}")
-  cp "${TEMPLATE_PATH}/project.yml.orig" "${TEMPLATE_PATH}/project.yml"
-  #sed -i "s/MY_PROJECT_NAME/$2/g" "${TEMPLATE_PATH}/project.yml"
-  #"${SCRIPT_ABS_PATH}"/../project-scaffold-template/rob remove
-done
+find "${SCRIPT_ABS_PATH}/../project-scaffold-template" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}/../project-scaffold-template" -exec bash -c 'reverse_project_info_for_rob "$0" "$1" "$2"' "${SCRIPT_ABS_PATH}" "$2" {} \;
 
 done_banner "Top level" "fix up"

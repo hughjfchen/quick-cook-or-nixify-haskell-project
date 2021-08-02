@@ -8,26 +8,30 @@ fi
 
 init_with_root_or_sudo "$0"
 
-begin_banner "Top level" "project scaffold existing"
+begin_banner "Top level" "project scaffold based on template"
 
 #set +u to temp work around the nix script
 set +u
 [[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
 set -u
 
+# define a function to handle paths which are provided by a find command
+function prepare_project_info_for_rob () {
+	local TEMPLATE_NAME
+    	TEMPLATE_NAME=$(basename "$3")
+	cp "$3/project.yml.orig" "$3/project.yml"
+	sed -i "s/MY_PROJECT_NAME/$2/g" "$3/project.yml"
+    	"$1"/rob add "${TEMPLATE_NAME}" "$3"
+}
+# export the above function so that can be used by other command or subshell
+export -f prepare_project_info_for_rob
+
 case ${THE_DISTRIBUTION_ID} in
   debian|ubuntu|rhel|centos)
     SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
     mkdir -p "$1/$2"
     cd "$1/$2"
-    TEMPLATE_PATHS=$(find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}")
-    for TEMPLATE_PATH in "${TEMPLATE_PATHS}"
-    do
-    	TEMPLATE_NAME=$(basename "${TEMPLATE_PATH}")
-	cp "${TEMPLATE_PATH}/project.yml.orig" "${TEMPLATE_PATH}/project.yml"
-	sed -i "s/MY_PROJECT_NAME/$2/g" "${TEMPLATE_PATH}/project.yml"
-    	"${SCRIPT_ABS_PATH}"/rob add "${TEMPLATE_NAME}" "${TEMPLATE_PATH}"
-    done
+    find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}" -exec bash -c 'prepare_project_info_for_rob "$0" "$1" "$2"' "${SCRIPT_ABS_PATH}" "$2" {} \;
     "${SCRIPT_ABS_PATH}"/rob new
     ;;
   *)
@@ -38,4 +42,4 @@ esac
 
 #nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
 
-done_banner "Top level" "project scaffold existing"
+done_banner "Top level" "project scaffold based on template"

@@ -46,4 +46,4 @@ cmdOptions :: ParserInfo CmdOptions
 cmdOptions = info (cmdOptionsParser <**> helper <**> versionOptionParser)
                 ( fullDesc
                 <> progDesc "{{description}}."
-                <> header ("{{name}}" <> showVersion version <> " - {{description}}."))
+                <> header ("{{name}} " <> showVersion version <> " - {{description}}."))
