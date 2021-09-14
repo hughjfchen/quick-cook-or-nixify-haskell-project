@@ -12,14 +12,14 @@ questions:
   nixos_release:
     question: Which nixos release?
     type: input
-    default: "2105"
+    default: "21.05"
 
   ghc_version:
     question: Which GHC version?
     type: input
-    default: "884"
+    default: "8.10.7"
 
   index_state:
     question: index-state of hackage database?
     type: input
-    default: 2021-07-18T00:00:00Z
+    default: 2021-09-13T00:00:00Z

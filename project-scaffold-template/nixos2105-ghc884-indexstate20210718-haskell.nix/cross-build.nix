@@ -1,12 +1,29 @@
 { defaultPlatformProject ? import ./default.nix {} ,
 toBuild ? import ./nix/cross-build/systems.nix defaultPlatformProject.pkgs 
 } :
-# 'cabalProject' generates a package set based on a cabal.project (and the corresponding .cabal files)
+# map through the system list
 defaultPlatformProject.pkgs.lib.mapAttrs (_: pkgs: rec {
   # nativePkgs.lib.recurseIntoAttrs, just a bit more explicilty.
   recurseForDerivations = true;
 
-  {{name }} = import ./default.nix { nativePkgs = pkgs; };
+  {{name }} = import ./default.nix { nativePkgs = pkgs;
+                                     customeModules = if pkgs.stdenv.hostPlatform.isMusl then 
+                                                        [
+                                                          # following customization is to build fully static binary for project using postgresql-libpq
+                                                          { packages.postgresql-libpq.flags.use-pkg-config = true;  }
+                                                          # The order of -lssl and -lcrypto is important here
+                                                          { packages.postgrest.configureFlags = 
+                                                            [
+                                                              "--ghc-option=-optl=-lssl"
+                                                              "--ghc-option=-optl=-lcrypto"
+                                                              "--ghc-option=-optl=-L${pkgs.openssl.out}/lib"
+                                                            ];
+                                                          }
+                                                          # also strip the static binary
+                                                          { packages.postgrest.dontStrip = false; }
+                                                        ] 
+                                                      else [];
+                                   };
 
   inherit pkgs;
 
