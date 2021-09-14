@@ -12,7 +12,7 @@ defaultPlatformProject.pkgs.lib.mapAttrs (_: pkgs: rec {
                                                           # following customization is to build fully static binary for project using postgresql-libpq
                                                           { packages.postgresql-libpq.flags.use-pkg-config = true;  }
                                                           # The order of -lssl and -lcrypto is important here
-                                                          { packages.postgrest.configureFlags = 
+                                                          { packages.{{name}}.configureFlags = 
                                                             [
                                                               "--ghc-option=-optl=-lssl"
                                                               "--ghc-option=-optl=-lcrypto"
@@ -20,7 +20,7 @@ defaultPlatformProject.pkgs.lib.mapAttrs (_: pkgs: rec {
                                                             ];
                                                           }
                                                           # also strip the static binary
-                                                          { packages.postgrest.dontStrip = false; }
+                                                          { packages.{{name}}.dontStrip = false; }
                                                         ] 
                                                       else [];
                                    };

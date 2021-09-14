@@ -33,9 +33,10 @@ case ${THE_DISTRIBUTION_ID} in
     cd "$1/$2"
     find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}" -exec bash -c 'prepare_project_info_for_rob "$0" "$1" "$2"' "${SCRIPT_ABS_PATH}" "$2" {} \;
     "${SCRIPT_ABS_PATH}"/rob new
+    "${SCRIPT_ABS_PATH}"/niv update
     ;;
   *)
-    nix-shell '<nixpkgs>' -p haskellPackages.rob --run "mkdir -p $1/$2; cd $1/$2; rob new"
+    nix-shell '<nixpkgs>' -p haskellPackages.rob niv --run "mkdir -p $1/$2; cd $1/$2; rob new; niv update"
     #nix-shell '<nixpkgs>' -p hello --run "mkdir -p $1/$2; hello"
     ;;
 esac
