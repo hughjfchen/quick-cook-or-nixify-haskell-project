@@ -96,8 +96,15 @@ executable {{name}}
                      , AppEnv
                      , AppError
                      , AppCapability.{{ name | toPascal }}
+                     , FromConfig.PostgresqlSimple
+                     , FromConfig.ResourcePool
+                     , FromConfig.{{ name | toPascal }}
   build-depends:       {{name}}
                      , optparse-applicative
+                     , conferer
+                     , postgresql-simple
+                     , resource-pool
+                     , time
   ghc-options:         -threaded
                        -rtsopts
                        -with-rtsopts=-N
