@@ -7,7 +7,7 @@ defaultPlatformProject.pkgs.lib.mapAttrs (_: pkgs: rec {
   recurseForDerivations = true;
 
   {{name }} = import ./default.nix { nativePkgs = pkgs;
-                                     customModules = if pkgs.stdenv.hostPlatform.isMusl then 
+                                     customModules = [ { packages.{{name}}.dontStrip = false; } ] ++ if pkgs.stdenv.hostPlatform.isMusl then 
                                                         [
                                                           # following customization is to build fully static binary for project using postgresql-libpq
                                                           { packages.postgresql-libpq.flags.use-pkg-config = true;  }
@@ -19,10 +19,9 @@ defaultPlatformProject.pkgs.lib.mapAttrs (_: pkgs: rec {
                                                               "--ghc-option=-optl=-L${pkgs.openssl.out}/lib"
                                                             ];
                                                           }
-                                                          # also strip the static binary
-                                                          { packages.{{name}}.dontStrip = false; }
                                                         ] 
-                                                      else [];
+                                                        else 
+                                                        [];
                                    };
 
   inherit pkgs;
