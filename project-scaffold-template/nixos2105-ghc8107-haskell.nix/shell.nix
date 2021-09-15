@@ -14,7 +14,8 @@
     # You might want some extra tools in the shell (optional).
 
     # Some common tools can be added with the `tools` argument
-    tools = { cabal = "latest"; hlint = "latest"; };
+    #tools = { cabal = "latest"; hlint = "latest"; };
+    tools = { cabal = defaultPlatformProject.pkgs.haskell-nix.cabal-install.ghc{{ghc_version | remove(".")}}.version; };
     # See overlays/tools.nix for more details
 
     # Some you may need to get some other way.

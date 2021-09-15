@@ -34,12 +34,20 @@ case ${THE_DISTRIBUTION_ID} in
     find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}" -exec bash -c 'prepare_project_info_for_rob "$0" "$1" "$2"' "${SCRIPT_ABS_PATH}" "$2" {} \;
     "${SCRIPT_ABS_PATH}"/rob new
     "${SCRIPT_ABS_PATH}"/niv update
+    cd - > /dev/null
     ;;
   *)
     nix-shell '<nixpkgs>' -p haskellPackages.rob niv --run "mkdir -p $1/$2; cd $1/$2; rob new; niv update"
     #nix-shell '<nixpkgs>' -p hello --run "mkdir -p $1/$2; hello"
     ;;
 esac
+
+# use haskell.nix internal index-state by default so that we sync cabal with nix
+if [ -f "$1/$2/cabal.project" ]; then
+    H_INTERNAL_INDEX_STATE=$(nix eval --quiet --raw "(import $1/$2/default.nix {}).pkgs.haskell-nix.internalHackageIndexState")
+    echo "index-state : $H_INTERNAL_INDEX_STATE" >> "$1/$2/cabal.project"
+fi
+#[[ -f "$1/$2/cabal.project" ]] && echo "index-state : $(nix eval --quiet --raw \"(import $1/$2/default.nix {}).pkgs.haskell-nix.internalHackageIndexSate)\"" >> "$1/$2/cabal.project"
 
 #nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
 

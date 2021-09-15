@@ -4,6 +4,11 @@ clone_depth: 5
 # Do not build feature branch with open Pull Requests
 skip_branch_with_pr: true
 
+# build only main branch
+branches:
+  only:
+    - master
+
 platform:
   - x86_64
 
@@ -16,12 +21,12 @@ environment:
     CABOPTS: --store-dir=C:\\SR
 
   matrix:
-    - GHCVER: 8.8.4
+    - GHCVER: {{ghc_version}}
 
 install:
   - choco source add -n mistuke -s https://www.myget.org/F/mistuke/api/v2
   - choco install -y cabal --version 2.4.1.0
-  - choco install -y ghc   --version 8.8.4
+  - choco install -y ghc   --version {{ghc_version}}
   - refreshenv
 
 before_build:
@@ -30,5 +35,6 @@ before_build:
   - cabal %CABOPTS% v2-update
 
 build_script:
+  - cabal %CABOPTS% v2-configure --enable-tests --enable-benchmarks --test-show-details=direct
   - cabal %CABOPTS% v2-build --enable-tests
   - cabal %CABOPTS% v2-test  --enable-tests

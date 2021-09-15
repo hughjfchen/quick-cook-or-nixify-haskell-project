@@ -29,7 +29,7 @@ rec {
         name = "{{name}}";
         src = ./.;
       };
-      index-state = "{{index_state}}";
+      index-state = pkgs.haskell-nix.internalHackageIndexState;
       compiler-nix-name = haskellCompiler;
       modules = customModules;
   });

@@ -7,7 +7,7 @@ defaultPlatformProject.pkgs.lib.mapAttrs (_: pkgs: rec {
   recurseForDerivations = true;
 
   {{name }} = import ./default.nix { nativePkgs = pkgs;
-                                     customModules = [ { packages.{{name}}.dontStrip = false; } ] ++ if pkgs.stdenv.hostPlatform.isMusl then 
+                                     customModules = [ { packages.{{name}}.dontStrip = false; } ] ++ (if pkgs.stdenv.hostPlatform.isMusl then 
                                                         [
                                                           # following customization is to build fully static binary for project using postgresql-libpq
                                                           { packages.postgresql-libpq.flags.use-pkg-config = true;  }
@@ -21,7 +21,7 @@ defaultPlatformProject.pkgs.lib.mapAttrs (_: pkgs: rec {
                                                           }
                                                         ] 
                                                         else 
-                                                        [];
+                                                        []);
                                    };
 
   inherit pkgs;

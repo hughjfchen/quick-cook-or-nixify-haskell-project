@@ -18,8 +18,3 @@ questions:
     question: Which GHC version?
     type: input
     default: "8.10.7"
-
-  index_state:
-    question: index-state of hackage database?
-    type: input
-    default: 2021-09-13T00:00:00Z
