@@ -1,1 +1,2 @@
-((nil . ((dante-target . "test:{{name}}-test"))))
+((nil . ((dante-target . "test:{{name}}-test")
+	 (dante-methods . (new-nix)))))

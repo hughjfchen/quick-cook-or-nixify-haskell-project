@@ -1,1 +1,2 @@
-((nil . ((dante-target . "exe:{{name}}"))))
+((nil . ((dante-target . "exe:{{name}}")
+	 (dante-methods . (new-nix)))))
