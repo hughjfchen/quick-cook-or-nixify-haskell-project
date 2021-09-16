@@ -1,3 +1,2 @@
-:load Prelude
 :def hg \x -> return $ ":!hoogle \"" ++ x ++ "\""
 :def hgi \x -> return $ ":!hoogle --info \"" ++ x ++ "\""

@@ -47,6 +47,11 @@ if [ -f "$1/$2/cabal.project" ]; then
     H_INTERNAL_INDEX_STATE=$(nix eval --quiet --raw "(import $1/$2/default.nix {}).pkgs.haskell-nix.internalHackageIndexState")
     echo "index-state : $H_INTERNAL_INDEX_STATE" >> "$1/$2/cabal.project"
 fi
+
+# make sure .ghci could be loaded by ensuring the mode
+chmod go-w "$1/$2/.ghci"
+chmod go-w "$1/$2"
+
 #[[ -f "$1/$2/cabal.project" ]] && echo "index-state : $(nix eval --quiet --raw \"(import $1/$2/default.nix {}).pkgs.haskell-nix.internalHackageIndexSate)\"" >> "$1/$2/cabal.project"
 
 #nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
