@@ -1,2 +1,1 @@
-((nil . ((dante-target . "test:{{name}}-test")
-	 (dante-methods . (new-nix)))))
+((nil . ((lsp-haskell-server-path . "haskell-language-server"))))
