@@ -71,6 +71,7 @@ common common-options
                        TupleSections
                        TypeApplications
                        ViewPatterns
+                       PatternSynonyms
 
 library
   import:              common-options
