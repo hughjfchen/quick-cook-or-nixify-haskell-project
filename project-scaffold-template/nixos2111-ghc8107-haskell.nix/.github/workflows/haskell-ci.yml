@@ -1,4 +1,4 @@
-name: CI
+name: haskell-ci
 
 # Trigger the workflow on push or pull request, but only for the main branch
 on:
@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macOS-latest, windows-latest]
-        cabal: ["2.4"]
+        cabal: ["3.6"]
         ghc:
           - {{ghc_version}}
         exclude:

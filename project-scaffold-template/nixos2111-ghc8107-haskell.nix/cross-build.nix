@@ -17,6 +17,9 @@ defaultPlatformProject.pkgs.lib.mapAttrs (_: pkgs: rec {
                                                               "--ghc-option=-optl=-lssl"
                                                               "--ghc-option=-optl=-lcrypto"
                                                               "--ghc-option=-optl=-L${pkgs.openssl.out}/lib"
+                                                              "--ghc-option=-optl=-lpgcommon"
+                                                              "--ghc-option=-optl=-lpgport"
+                                                              "--ghc-option=-optl=-L${pkgs.postgresql.out}/lib"
                                                             ];
                                                           }
                                                         ] 
