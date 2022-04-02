@@ -1,4 +1,4 @@
-name: build-with-nix
+name: self-hosted
 
 # Trigger the workflow on push or pull request, but only for the master branch
 on:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    name: build with haskell.nix
+    name: build with self-hosted runner
     runs-on: self-hosted
 
     steps:
