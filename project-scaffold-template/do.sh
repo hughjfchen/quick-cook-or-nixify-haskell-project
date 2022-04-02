@@ -44,7 +44,7 @@ esac
 
 # use haskell.nix internal index-state by default so that we sync cabal with nix
 if [ -f "$1/$2/cabal.project" ]; then
-    H_INTERNAL_INDEX_STATE=$(nix eval --impure --expr "(import $1/$2/default.nix {}).pkgs.haskell-nix.internalHackageIndexState")
+    H_INTERNAL_INDEX_STATE=$(nix eval --impure --expr "(import $1/$2/default.nix {}).pkgs.haskell-nix.internalHackageIndexState"|awk -F'"' '{print $2}')
     echo "index-state : $H_INTERNAL_INDEX_STATE" >> "$1/$2/cabal.project"
 fi
 
