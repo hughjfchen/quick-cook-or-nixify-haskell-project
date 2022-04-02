@@ -4,10 +4,10 @@ cradle:
       component: "lib:{{name}}"
 
     - path: "./app"
-      component: "{{name}}:exe:{{name}}"
+      component: "exe:{{name}}"
 
-    - path: "./tests"
-      component: "{{name}}:test:{{name}}-tests"
+    - path: "./test"
+      component: "test:{{name}}-test"
 
     - path: "./benchmark"
-      component: "{{name}}:exe:{{name}}-benchmark"
+      component: "bench:{{name}}-benchmark"
