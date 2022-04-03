@@ -1,3 +1,0 @@
-[[ -f ./shell.nix ]] && [[ -f ./nix/shell.nix ]] && rm -fr ./shell.nix && ln -s ./nix/shell.nix ./shell.nix
-[[ -f ./.envrc ]] && [[ -f ./direnv/envrc.bash ]] && rm -fr ./.envrc && ln -s ./direnv/envrc.bash ./.envrc
-[[ -f ./.hie-bios ]] && chmod +x ./.hie-bios
