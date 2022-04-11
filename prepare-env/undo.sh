@@ -12,7 +12,7 @@ init_with_root_or_sudo "$0"
 begin_banner "Top level" "project env unprepare"
 
 set +u
-[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
+[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . "$HOME/.nix-profile/etc/profile.d/nix.sh"
 set -u
 
 if type nix-build >/dev/null 2>&1; then
@@ -23,14 +23,14 @@ if type nix-build >/dev/null 2>&1; then
     set +e
     sudo rm -fr /nix > /dev/null 2>&1
     set -e
-    sudo rm -fr $HOME/.nix-channels
-    sudo rm -fr $HOME/.nix-defexpr
-    sudo rm -fr $HOME/.nix-profile
-    [[ -f $HOME/.config/nix/nix.conf ]] && sudo rm -fr $HOME/.config/nix/nix.conf
-    [[ -d $HOME/.cache/nix ]] && sudo rm -fr $HOME/.cache/nix
-    [[ -f $HOME/.profile ]] && sed -i.nix.uninstall.bak '/.nix-profile/d' $HOME/.profile
-    [[ -f $HOME/.bash_profile ]] && sed -i.nix.uninstall.bak '/.nix-profile/d' $HOME/.bash_profile
-    [[ -f $HOME/.bashrc ]] && sed -i.nix.uninstall.bak '/.nix-profile/d' $HOME/.bashrc
+    sudo rm -fr "$HOME/.nix-channels"
+    sudo rm -fr "$HOME/.nix-defexpr"
+    sudo rm -fr "$HOME/.nix-profile"
+    [[ -f $HOME/.config/nix/nix.conf ]] && sudo rm -fr "$HOME/.config/nix/nix.conf"
+    [[ -d $HOME/.cache/nix ]] && sudo rm -fr "$HOME/.cache/nix"
+    [[ -f $HOME/.profile ]] && sed -i.nix.uninstall.bak '/.nix-profile/d' "$HOME/.profile"
+    [[ -f $HOME/.bash_profile ]] && sed -i.nix.uninstall.bak '/.nix-profile/d' "$HOME/.bash_profile"
+    [[ -f $HOME/.bashrc ]] && sed -i.nix.uninstall.bak '/.nix-profile/d' "$HOME/.bashrc"
 fi
 
 #if type nodejs >/dev/null 2>&1 || type node >/dev/null 2>&1; then

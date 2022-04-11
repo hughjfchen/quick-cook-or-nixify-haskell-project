@@ -8,7 +8,7 @@ fi
 
 init_with_root_or_sudo "$0"
 
-SCRIPT_ABS_PATH=$(turn_to_absolute_path $0)
+SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
 
 begin_banner "Top level" "build framework"
 
@@ -16,8 +16,8 @@ cp -R "${SCRIPT_ABS_PATH}"/template/* "$1/$2/"
 
 for FILE_TO_SED in $(grep -R MY_PROJECT_NAME "$1/$2/"*|awk -F":" '{print $1}'|sort|uniq)
 do
-   sed -i.bak.for.sed.inplace.edit "s/MY_PROJECT_NAME/$2/g" ${FILE_TO_SED}
-   rm -fr ${FILE_TO_SED}.bak.for.sed.inplace.edit
+   sed -i.bak.for.sed.inplace.edit "s/MY_PROJECT_NAME/$2/g" "${FILE_TO_SED}"
+   rm -fr "${FILE_TO_SED}.bak.for.sed.inplace.edit"
 done
 
 MY_INDEX_STATE=$(date +%Y-%m-%dT00:00:00Z)
@@ -33,13 +33,11 @@ echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/.dir-locals.el
 [ -d "$1/$2"/test ] && echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/test/.dir-locals.el
 
 # setup the .ghci for great experience
-echo >> "$1/$2"/.ghci ':def hg \x -> return $ ":!hoogle \"" ++ x ++ "\""'
-echo >> "$1/$2"/.ghci ':def hgi \x -> return $ ":!hoogle --info \"" ++ x ++ "\""'
-echo >> "$1/$2"/.ghci ':def hgr \x -> return $ ":!lynx -dump -dont_wrap_pre -with_backspaces -nolist -nonumbers  \"" ++ "https://hoogle.haskell.org/?hoogle=" ++ x ++ "\""'
+{ echo ':def hg \x -> return $ ":!hoogle \"" ++ x ++ "\""' ; echo ':def hgi \x -> return $ ":!hoogle --info \"" ++ x ++ "\""' ; echo ':def hgr \x -> return $ ":!lynx -dump -dont_wrap_pre -with_backspaces -nolist -nonumbers  \"" ++ "https://hoogle.haskell.org/?hoogle=" ++ x ++ "\""' ; } >> "$1/$2/.ghci"
 
 #update niv sources list
 set +u
-[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
+[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . "$HOME/.nix-profile/etc/profile.d/nix.sh"
 set -u
 
 # Pin to the latest stable channel instead
@@ -50,7 +48,7 @@ MY_CHANNEL_NUM=$(echo "${MY_CHANNEL}" | awk -F"-" '{print $2}')
 
 case ${THE_DISTRIBUTION_ID} in
   debian|ubuntu|rhel|centos)
-    cd $1/$2
+    cd "$1/$2"
     "${SCRIPT_ABS_PATH}"/niv init --no-nixpkgs
     # following is for Linux
     "${SCRIPT_ABS_PATH}"/niv add NixOS/nixpkgs -n nixpkgs -b "nixos-${MY_CHANNEL_NUM}"
