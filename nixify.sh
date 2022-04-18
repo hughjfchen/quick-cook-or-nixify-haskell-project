@@ -85,6 +85,8 @@ case $3 in
          cp "${quick_cook_nixify_tmp_dir}/$2/build" "$1/$2"
          [ -f "$1/$2/deploy" ] && mv "$1/$2/deploy" "$1/$2/deploy.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          cp "${quick_cook_nixify_tmp_dir}/$2/deploy" "$1/$2"
+         [ -f "$1/$2/arion" ] && mv "$1/$2/arion" "$1/$2/arion.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
+         cp "${quick_cook_nixify_tmp_dir}/$2/arion" "$1/$2"
 	 # for executables, we need to copy to override them after applying tempalte(Why?)
 	 cp "${SCRIPT_ABS_PATH}"/deployment-framework/arion "$1/$2/cd/" && chmod +x "$1/$2/cd/arion"
          mkdir -p "$1/$2/.github/workflows"
