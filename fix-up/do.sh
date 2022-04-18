@@ -36,7 +36,9 @@ while read -r PROJECT_PASCAL_NAME_PATH; do
 	[[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" "${PROJECT_PASCAL_NAME_PATH//project.pascal.name/${PROJECT_PASCAL_NAME}}"
 done <<< "$(find "$1/$2" -name "*project.pascal.name*" ! -wholename "$1/$2/.project.pascal.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
 
-[[ -f "$1/$2/start-dev" ]] && chmod +x "$1/$2/start-dev"
+[[ -f "$1/$2/develop" ]] && chmod +x "$1/$2/develop"
+[[ -f "$1/$2/build" ]] && chmod +x "$1/$2/build"
+[[ -f "$1/$2/deploy" ]] && chmod +x "$1/$2/deploy"
 find "$1/$2" -name "*.sh" -exec chmod +x {} \;
 find "$1/$2" -name "*.bash" -exec chmod +x {} \;
 find "$1/$2" -type d -name bin -exec chmod -R +x {} \;

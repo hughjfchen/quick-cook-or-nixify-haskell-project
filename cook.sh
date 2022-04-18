@@ -40,6 +40,8 @@ case $3 in
          "${SCRIPT_ABS_PATH}"/project-scaffold-template/do.sh "$1" "$2"
 
          "${SCRIPT_ABS_PATH}"/fix-up/do.sh "$1" "$2"
+	 # for executables, we need to copy to override them after applying tempalte(Why?)
+	 cp "${SCRIPT_ABS_PATH}"/deployment-framework/arion "$1/$2/cd/" && chmod +x "$1/$2/cd/arion"
          ;;
   *)
          ;;
