@@ -1,1 +1,1 @@
-{{name|toSnake}}_datadir=$(dirname "$0")/cd $(dirname "$0")/cd/arion up -d
+arion_compose_datadir=$(dirname "$0")/cd $(dirname "$0")/cd/arion up -d
