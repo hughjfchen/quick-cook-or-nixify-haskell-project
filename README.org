@@ -5,46 +5,78 @@
 #+DATE: 2020-12-18
 #+OPTIONS: ^:{} toc:3
 
-This is a tool which can help you quickly generate a haskell project with the [[https://nixos.org][~nix~]] and [[https://github.com/input-output-hk/haskell.nix][~haskell.nix~]] as the build framework.
+This is a tool which can help you quickly generate a haskell project based on best practice to structure your program and with the [[https://nixos.org][nix]] and [[https://github.com/input-output-hk/haskell.nix][haskell.nix]] as the build framework and [[https://docker.io][docker]], [[https://docs.docker.com/compose][docker-compose]] and [[https://github.com/hercules-ci/arion][arion-compose]] as the deployment framework.
+
+* Motivation
+
+We want to write code as quickly as possible when we build an application. However, the reality is that we need to build the application and deploy it for testing. Without the build and deploy, we can't test it(even for unit testing). And without testing, we don't know if our application works as expected. So we need to put a lot of effort to make our application build and deploy for testing. Fortunately, we can reduce the effort by generating the build and deploy infrastructure for our application. Furthermore, our application need to follow some best practice to structure our source code for maintenance. And this can also achieve by generating project based on a template.
+
+Based on the above consideration, I create this project generator to quickly cook a project if I want to build a haskell application.
 
 * Features
 
 This tool has following features at this moment:
-- install ~nix~ if needed
+- install build and deploy dependencies, including ~nix~, ~docker~, ~docker-compose~ if needed
 - multiple platforms supported(currently ~linux~ and ~macos~ are supported, ~windows~ with ~WSL~ may work but not tested)
-- generate haskell project from scratch with the [[https://github.com/kowainik/summoner][~summoner~]] tool
-- generate most usable nix files, including:
+- generate project based on the tool ~summon~(*deprecated*, will be removed eventually)
+- create project based on existing project templates with [[https://github.com/GianlucaGuarini/rob][rob]]
+  - currently there are one existing templates
+    - ~nixos2111-ghc8107-haskell.nix~
+  - new template will be added following the tools(~nix~ and ~haskell.nix~) update
+  - very easy to add new project template with new build infrastructure
+- generate most usable nix files for build and deploy, including:
   - default.nix :: this is the major nix file which is used by all other nix files.
   - shell.nix :: to setup a development environment with nix-shell
   - cross-build.nix :: this nix expression can be used to build cross platform targets, including fully static binary linked with musl library
   - docker.nix :: this file can be used to build a docker image for the project
   - tarball.nix :: this file can be used to tar up the executable and its dependencies as a tarball for the project
-- create project based on existing project templates with [[https://github.com/GianlucaGuarini/rob][~rob~]]
-  - currently there are two existing templates
-    - ~nixos2105-ghc884-indexstate20210718-haskell.nix~
-    - ~nixos2105-ghc8107-haskell.nix~
-  - very easy to add new project template with new build infrastructure
+  - arioin-pkgs.nix :: this file can be used to define the package set for ~arion-compose~ to build the container
+  - arion-compose.nix :: this file can be used to compose services by ~arion-compose~ and orchestrate these services as ~docker-compose~
+  - build :: use this script to build the project
+  - deploy :: use this script to deploy the project
+  - develop :: use this script to start development of the project
+  - arion :: the utility to check the deployment status
+- pin ~nix~ package based on ~haskell.nix~ version so that the build is reproduceable and reduce build time by downloading cache from ~haskell.nix~
+- ready to be built project, just type ~build~ and you can get the project executable
+- ready to be deployed project, just type ~deploy~ and your project will be deployed as ~docker~ container
+- source code stub following the [[https://www.parsonsmatt.org/2018/03/22/three_layer_haskell_cake.html][three layer cake]] pattern practice
+- ready to run Github Action CI support
+- nixify existing projects, i.e., make existing projects build and deploy using this build and deploy framework
 
 * Usage
 
 Following these steps to use this tool:
 
 1. clone the repository.
-2. run the following command under the clone directory:
+2. to generate a project skeleton from scratch, run the following command under the clone directory:
    #+begin_src sh
 ./cook.sh <the directory where the project will be put> <the name of the project> <generate|template>
- - generate means generate new project with summon
+ - generate means generate new project with summon(deprecated, not recommended)
  - template means create project based on existing template
    #+end_src
-3. follow the prompt of the screen til everything is done.
+3. to nixify an existing project, run the following command under the clone directory:
+   #+begin_src sh
+./nixify.sh <the parent directory of the existing project> <the name of the existing project> <template>
+ - template means nixify the existing project based on template
+   #+end_src
+4. follow the prompt of the screen til everything is done. usually, you just press enter
+
 
 * How does it work
 
-** Nix provision
+** Dependencies provision
 
-This tool will check if ~nix~ present on the running machine, if not, it will connect to the official ~nix~ web site and install ~nix~ first, it also set the default ~nix~ channel to the latest stable one.
+This tool provides scripts to provision dependencies. When you try to run ~build~ and get ~nix command not found~ error, you could run following command to provision ~nix~ dependency:
+#+begin_src sh
+./ci/prepare-env/do.sh (assume you're within your project directory)
+#+end_src
+And if run ~deploy~ and get ~docker or docker-compose not found~, run following to install ~docker~ and ~docker-compose~:
+#+begin_src sh
+./cd/prepare-env/do.sh (assume you're within your project directory)
+#+end_src
+The provision process connect to the official ~nix~ web site and install ~nix~ first, it also set the default ~nix~ channel to the latest stable one. It also install the ~docker~ and ~docker-compose~ packages.
 
-** Generate haskell project
+** Generate haskell project (*deprecated*, not recommended)
 
 This tool uses the ~summoner~ to do this job, for more information during the project generation, please refer to the [[https://github.com/kowainik/summoner][official site]].
 
@@ -65,6 +97,15 @@ This tool generates the ready to go build framework for the generated project wi
 - It also generates a ~tarball.nix~ file which can be used to build a tarball file
 - It also comes with overlay support. If you want to override some packages within the ~hackage~ database, you can add a ~nix~ file for this package under the directory =nix/overlay= and it will be picked up automatically.
 
+**  Generate the deploy framework based on the ~docker~, ~docker-compose~ and ~arion-compose~
+
+This tool generates the ready to go deploy framework with follow facts:
+
+- With ~arion-pkgs.nix~, it imports the package set from the ~default.nix~ generated by the build framework so make consistent with the build
+- It uses the ~arion-compose.nix~ to compose your project executable and other nix packages or docker images from dockerhub and ready to deploy
+
+So if you want other packages or docker images as the runtime dependencies of your project executable, just add them into the ~arion-compose.nix~.
+
 * Setup development environment
 
 Besides the ~shell.nix~, this tool also generates some other files to help you quick start the development:
@@ -75,8 +116,24 @@ Besides the ~shell.nix~, this tool also generates some other files to help you q
 
 With above files in place, you can just run the =nix-shell= under the project directory to enter a ~nix-shell~ and start ~emacs~ within the ~nix-shell~ and start to code.
 
+* Build
+
+To build your project, just run ~build~ within your project directory.
+
+* Deploy
+
+To deploy your project and run it, just type ~deploy~ command within the project directory.
+
+* Nixify existing projects
+
+When nixifying an existing project with the ~nixify.sh~ script, it will override or modify some files, e.g. ~cabal.project~ etc. It will backup the modified files before overriding or modifying.
+
+* How to really write code
+
+With the build and deploy framework in place, we can finally focus on writing haskell code. So how should I do that? Well, as said previously, the generated project source tree is followed the practice described the the article [[https://www.parsonsmatt.org/2018/03/22/three_layer_haskell_cake.html][Three Layer Haskell Cake]], so to really write code, read that article, understand its structure and happy hacking.
+
 * Todos
 
 Following are the incomplete list of the features I want to implement in near future:
-- Add github action CI support based on ~haskell.nix~
+- Add github action CI support based on ~haskell.nix~ DONE
 - Add more project templates
