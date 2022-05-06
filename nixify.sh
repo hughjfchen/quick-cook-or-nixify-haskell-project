@@ -43,6 +43,8 @@ case $3 in
          cp -R "${quick_cook_nixify_tmp_dir}/$2/cd" "$1/$2"
          [ -d "$1/$2/nix" ] && mv "$1/$2/nix" "$1/$2/nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          cp -R "${quick_cook_nixify_tmp_dir}/$2/nix" "$1/$2"
+         [ -d "$1/$2/config" ] && mv "$1/$2/config" "$1/$2/config.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
+         cp -R "${quick_cook_nixify_tmp_dir}/$2/config" "$1/$2"
          [ -f "$1/$2/default.nix" ] && mv "$1/$2/default.nix" "$1/$2/default.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          cp "${quick_cook_nixify_tmp_dir}/$2/default.nix" "$1/$2"
          [ -f "$1/$2/shell.nix" ] && mv "$1/$2/shell.nix" "$1/$2/shell.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
