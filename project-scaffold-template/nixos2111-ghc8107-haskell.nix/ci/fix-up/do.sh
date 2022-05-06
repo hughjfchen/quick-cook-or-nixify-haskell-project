@@ -15,7 +15,7 @@ begin_banner "Top level" "project build - fix-up"
 
 if [ -f "${SCRIPT_ABS_PATH}"/../../{{name}}.tar.gz ]; then
   [[ -e ${SCRIPT_ABS_PATH}/../../{{name}}_dist.tar.gz ]] && rm -fr "${SCRIPT_ABS_PATH}"/../../{{name}}_dist.tar.gz
-  tar zcf "${SCRIPT_ABS_PATH}"/../../{{name}}_dist.tar.gz -C "$SCRIPT_ABS_PATH/../../" ./{{name]}.tar.gz ./cd/common ./cd/prepare-env ./cd/unpack-tarball ./cd/fix-up ./.build.output.nix.store.path ./.release.has.systemd.service ./.release.user.name ./"$1"
+  tar zcf "${SCRIPT_ABS_PATH}"/../../{{name}}_dist.tar.gz -C "$SCRIPT_ABS_PATH/../../" ./{{name}}.tar.gz ./cd/common ./cd/prepare-env ./cd/unpack-tarball ./cd/fix-up ./.build.output.nix.store.path ./.release.has.systemd.service ./.release.user.name ./"$1"
 else
   warn "No ${SCRIPT_ABS_PATH}/{{name}}.tar.gz found , can't pack distributable tarball"
 fi

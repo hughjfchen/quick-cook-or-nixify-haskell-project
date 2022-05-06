@@ -27,7 +27,7 @@ let
     buildInputs = [ nPkgs.makeWrapper ];
     # wrap the executable, suppose it accept a --config commandl ine option to load the config
     postBuild = ''
-      wrapProgram $out/bin/{{name}} --add-flags "--config ${{{name}}-config}" --prefix PATH : $out/bin --prefix LANG : en_US.utf-8
+      wrapProgram $out/bin/{{name}} --add-flags "--config {%raw%}${{%endraw%}{{name}}-config{%raw%}}{%endraw%}" --prefix PATH : $out/bin --prefix LANG : en_US.utf-8
     '';
   };
   # following define the service
@@ -54,8 +54,8 @@ let
               serviceConfig = {
                 Type = "simple";
                 User = "{{name}}";
-                ExecStart = ''${{{name}}-bin-wrap}/bin/{{name}}'';
-                ExecStop = ''${{{name}}-bin-wrap}/bin/{{name}}'';
+                ExecStart = ''{%raw%}${{%endraw%}{{name}}-bin-wrap{%raw%}}{%endraw%}/bin/{{name}}'';
+                ExecStop = ''{%raw%}${{%endraw%}{{name}}-bin-wrap{%raw%}}{%endraw%}/bin/{{name}}'';
                 Restart = "on-failure";
               };
             };
