@@ -39,6 +39,9 @@ done <<< "$(find "$1/$2" -name "*project.pascal.name*" ! -wholename "$1/$2/.proj
 [[ -f "$1/$2/develop" ]] && chmod +x "$1/$2/develop"
 [[ -f "$1/$2/build" ]] && chmod +x "$1/$2/build"
 [[ -f "$1/$2/deploy" ]] && chmod +x "$1/$2/deploy"
+[[ -f "$1/$2/deploy-to-local-docker-compose" ]] && chmod +x "$1/$2/deploy-to-local-docker-compose"
+[[ -f "$1/$2/deploy-to-test-vm" ]] && chmod +x "$1/$2/deploy-to-test-vm"
+[[ -f "$1/$2/deploy-to-production-vm" ]] && chmod +x "$1/$2/deploy-to-production-vm"
 [[ -f "$1/$2/arion" ]] && chmod +x "$1/$2/arion"
 find "$1/$2" -name "*.sh" -exec chmod +x {} \;
 find "$1/$2" -name "*.bash" -exec chmod +x {} \;
