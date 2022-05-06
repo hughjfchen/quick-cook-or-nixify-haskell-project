@@ -30,7 +30,7 @@ if ! type nix-build >/dev/null 2>&1; then
         curl -L https://nixos.org/nix/install | sh
 	      ;;
       rhel|centos)
-        curl -L https://nixos.org/releases/nix/nix-2.1.3/install | sh
+        curl -L https://nixos.org/releases/nix/nix-2.4/install | sh
 	      ;;
       *) ;;
     esac
