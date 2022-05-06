@@ -11,6 +11,25 @@ init_with_root_or_sudo "$0"
 
 begin_banner "Top level" "deploy env unprepare"
 
+if [ -d /var/"$RELEASE_USER_NAME" ]; then
+    info "/var/$RELEASE_USER_NAME directory found, delete it..."
+    sudo rm -fr /var/"RELEASE_USER_NAME"
+fi
+
+set +e
+myUser2=$(awk -F":" '{print $1}' /etc/passwd | grep -w "$RELEASE_USER_NAME")
+if [ "X${myUser2}" != "X" ]; then
+    info "$RELEASE_USER_NAME user defined, delete it..."
+    sudo userdel -fr "$RELEASE_USER_NAME"
+fi
+
+myGroup2=$(awk -F":" '{print $1}' /etc/group | grep -w "$RELEASE_USER_NAME")
+if [ "X${myGroup2}" != "X" ]; then
+    info "$RELEASE_USER_NAME group defined, delete it..."
+    sudo groupdel -f "$RELEASE_USER_NAME"
+fi
+set -e
+
 if type docker >/dev/null 2>&1; then
     info "docker found, trying to uninstall it"
     case ${THE_DISTRIBUTION_ID} in

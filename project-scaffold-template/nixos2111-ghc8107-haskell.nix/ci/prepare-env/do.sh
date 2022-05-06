@@ -12,7 +12,7 @@ init_with_root_or_sudo "$0"
 begin_banner "Top level" "project env prepare"
 
 set +u
-[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
+[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
 set -u
 
 if ! type nix-build >/dev/null 2>&1; then
@@ -35,7 +35,7 @@ if ! type nix-build >/dev/null 2>&1; then
       *) ;;
     esac
     set +u
-    . $HOME/.nix-profile/etc/profile.d/nix.sh
+    . "$HOME"/.nix-profile/etc/profile.d/nix.sh
     set -u
     switch_to_last_stable_nix_channel
 fi

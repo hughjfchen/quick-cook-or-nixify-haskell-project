@@ -1,2 +1,2 @@
-#!/bin/env sh
-nix-build $(dirname "$0")/cross-build.nix
+#!/usr/bin/env bash
+nix-build "$(dirname "$0")"/cross-build.nix

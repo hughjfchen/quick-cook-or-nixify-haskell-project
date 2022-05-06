@@ -9,19 +9,19 @@ fi
 
 init_with_root_or_sudo "$0"
 
-SCRIPT_ABS_PATH=$(turn_to_absolute_path $0)
+SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
 
-begin_banner "Top level" "project deploy - packing"
+begin_banner "Top level" "project build - packing"
 
 set +u
-[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
+[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
 set -u
 
-if [ -e ${SCRIPT_ABS_PATH}/../../result ]; then
-  [[ -e ${SCRIPT_ABS_PATH}/../../{{name | toSnake}}.tar.gz ]] && rm -fr ${CRIPT_ABS_PATH}/../../{{name | toSnake}}.tar.gz
-  tar zPcf ${SCRIPT_ABS_PATH}/../../{{name | toSnake}}.tar.gz $(nix-store --query --requisites ${SCRIPT_ABS_PATH}/../../result)
+if [ -e "${SCRIPT_ABS_PATH}"/../../result ]; then
+  [[ -e ${SCRIPT_ABS_PATH}/../../{{name}}.tar.gz ]] && rm -fr "${SCRIPT_ABS_PATH}"/../../{{name}}.tar.gz
+  nix-store --query --requisites "${SCRIPT_ABS_PATH}"/../../result | tar zPcf "${SCRIPT_ABS_PATH}"/../../{{name}}.tar.gz -T -
 else
   info "No ${SCRIPT_ABS_PATH}/../../result, can't pack tarball"
 fi
 
-done_banner "Top level" "project deploy - packing"
+done_banner "Top level" "project build - packing"
