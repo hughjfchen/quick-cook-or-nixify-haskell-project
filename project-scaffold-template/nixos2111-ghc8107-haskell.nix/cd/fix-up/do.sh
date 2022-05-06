@@ -14,7 +14,7 @@ SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
 begin_banner "Top level" "project deploy - fix-up"
 
 if [ -n "$NIX_STORE_PATH" ]; then
-  if [ -n "$RELEASE_HAS_SYSTEMD_SERVICE" ]; then
+  if [ -n "$RELEASE_HAS_SYSTEMD_SERVICE" ] && [ "true" == "$RELEASE_HAS_SYSTEMD_SERVICE" ]; then
     "$NIX_STORE_PATH"/bin/setup-systemd-units
   else
     info "To use the program, type $NIX_STORE_PATH/bin/{{name}} at the command prompt."
