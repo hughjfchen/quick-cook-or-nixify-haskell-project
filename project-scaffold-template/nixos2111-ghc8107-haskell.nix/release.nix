@@ -81,7 +81,7 @@ let
     # list the runtime dependencies, especially those cannot be determined by nix automatically
     nPkgs.jdk
     nPkgs.xvfb-run
-    nPkgs.my-jca-wrap
+    my-jca-wrap
     sPkgs.{{name}}.{{name}}-exe
   ];
   {{name}}-bin-wrap = nPkgs.symlinkJoin {
