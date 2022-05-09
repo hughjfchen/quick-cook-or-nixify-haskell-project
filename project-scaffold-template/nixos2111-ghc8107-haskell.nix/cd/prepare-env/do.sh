@@ -151,6 +151,7 @@ if [ -n "$RELEASE_USER_NAME" ]; then
         info "no /var/$RELEASE_USER_NAME directory found, create it..."
         sudo mkdir -p /var/"$RELEASE_USER_NAME"/data
         sudo mkdir -p /var/"$RELEASE_USER_NAME"/config
+        sudo mkdir -p /var/"$RELEASE_USER_NAME"/run
         sudo chown -R "$RELEASE_USER_NAME":"$RELEASE_USER_NAME" /var/"$RELEASE_USER_NAME"
     fi
 fi
