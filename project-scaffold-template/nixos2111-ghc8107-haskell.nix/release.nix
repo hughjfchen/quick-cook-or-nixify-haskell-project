@@ -45,7 +45,13 @@ let
       })
     ];
   };
-
+  mat-with-dtfj-sh = nPkgs.writeShellApplication {
+    name = "mat-with-dtfj-sh";
+    runtimeInputs = [ nPkgs.xvfb-run mat-with-dtfj ];
+    text = ''
+      xvfb-run -a eclipse -consolelog -application org.eclipse.mat.api.parse "$@"
+    '';
+  };
   # java jar packages
   my-jca = nPkgs.stdenv.mkDerivation {
     name = "my-jca";
@@ -62,12 +68,11 @@ let
       cp $src $out/share/java/
     '';
   };
-  my-jca-wrap = nPkgs.symlinkJoin {
-    name = "my-jca-wrap";
-    paths = [ nPkgs.xvfb-run my-jca ];
-    buildInputs = [ nPkgs.makeWrapper ];
-    postBuild = ''
-      wrapProgram $out/bin/xvfb-run --add-flags "-a java -jar $out/share/java/jca${my-jca.version}.jar" --prefix PATH : $out/bin --prefix LANG : en_US.utf-8
+  my-jca-sh = nPkgs.writeShellApplication {
+    name = "my-jca-sh";
+    runtimeInputs = [ nPkgs.xvfb-run nPkgs.jdk11 ];
+    text = ''
+      xvfb-run -a java -jar ${my-jca.src} "$@"
     '';
   };
 
@@ -77,20 +82,25 @@ let
     # generate the key = value format config, refer to the lib.generators for other formats
     text = (lib.generators.toKeyValue {}) (import ./config/${releasePhase}/${releaseHost} { pkgs = nPkgs; });
   };
-  {{name}}-bin-wrap-paths = [
+  {{name}}-bin-sh-paths = [
     # list the runtime dependencies, especially those cannot be determined by nix automatically
-    nPkgs.jdk
-    nPkgs.xvfb-run
-    my-jca-wrap
+    nPkgs.wget
+    nPkgs.curl
+    mat-with-dtfj-sh
+    my-jca-sh
     sPkgs.{{name}}.{{name}}-exe
   ];
-  {{name}}-bin-wrap = nPkgs.symlinkJoin {
-    name = "{{name}}-bin-wrap";
-    paths = {{name}}-bin-wrap-paths;
-    buildInputs = [ nPkgs.makeWrapper ];
+  {{name}}-bin-sh = nPkgs.writeShellApplication {
+    name = "{{name}}-bin-sh";
+    runtimeInputs = {{name}}-bin-sh-paths;
     # wrap the executable, suppose it accept a --config commandl ine option to load the config
-    postBuild = ''
-      wrapProgram $out/bin/{{name}} --add-flags "--config {%raw%}${{%endraw%}{{name}}-config{%raw%}}{%endraw%}" --prefix PATH : $out/bin --prefix LANG : en_US.utf-8
+    text = ''
+      if [ -f "$HOME"/.config/{{name}}/{{name}}.properties ]; then
+        THE_CONFIG_FILE="$HOME"/.config/{{name}}/{{name}}.properties
+      else
+        THE_CONFIG_FILE={%raw%}${{%endraw%}{{name}}{%raw%}}{%endraw%}
+      fi
+      {{name}} --config.file="$THE_CONFIG_FILE" "$@"
     '';
   };
   # following define the service
@@ -117,8 +127,8 @@ let
               serviceConfig = {
                 Type = "simple";
                 User = "{{name}}";
-                ExecStart = ''{%raw%}${{%endraw%}{{name}}-bin-wrap{%raw%}}{%endraw%}/bin/{{name}}'';
-                ExecStop = ''{%raw%}${{%endraw%}{{name}}-bin-wrap{%raw%}}{%endraw%}/bin/{{name}}'';
+                ExecStart = ''{%raw%}${{%endraw%}{{name}}-bin-sh{%raw%}}{%endraw%}/bin/{{name}}-bin-sh --command=Start'';
+                ExecStop = ''{%raw%}${{%endraw%}{{name}}-bin-sh{%raw%}}{%endraw%}/bin/{{name}}-bin-sh --command=Stop'';
                 Restart = "on-failure";
               };
             };
@@ -130,12 +140,12 @@ let
       })
   ).config.systemd.units."{{name}}.service".text;
 in
-{ inherit nativePkgs pkgs {{name}}-config {{name}}-bin-wrap;
-  mk-{{name}}-service-systemd-setup = if genSystemdUnit then
+{ inherit nativePkgs pkgs;
+  mk-{{name}}-service-systemd-setup-or-bin-sh = if genSystemdUnit then
     (nPkgs.setupSystemdUnits {
       namespace = "{{name}}";
       units = {
         "{{name}}.service" = mk-{{name}}-service-unit;
       };
-    }) else {};
+    }) else {{name}}-bin-sh;
 }

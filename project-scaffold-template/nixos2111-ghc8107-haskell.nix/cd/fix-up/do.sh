@@ -17,7 +17,7 @@ if [ -n "$NIX_STORE_PATH" ]; then
   if [ -n "$RELEASE_HAS_SYSTEMD_SERVICE" ] && [ "true" == "$RELEASE_HAS_SYSTEMD_SERVICE" ]; then
     "$NIX_STORE_PATH"/bin/setup-systemd-units
   else
-    info "To use the program, type $NIX_STORE_PATH/bin/{{name}} at the command prompt."
+    info "To use the program, type $NIX_STORE_PATH/bin/{{name}}-bin-sh at the command prompt."
   fi
 else
   my_exit "cannot determine the build artifect path without the NIX_STORE_PATH environment variable."
