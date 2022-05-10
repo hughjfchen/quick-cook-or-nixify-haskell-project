@@ -17,11 +17,11 @@ set +u
 [[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
 set -u
 
-if [ -e "${SCRIPT_ABS_PATH}"/../../result ]; then
-  [[ -e ${SCRIPT_ABS_PATH}/../../{{name}}.tar.gz ]] && rm -fr "${SCRIPT_ABS_PATH}"/../../{{name}}.tar.gz
-  nix-store --query --requisites "${SCRIPT_ABS_PATH}"/../../result | tar zPcf "${SCRIPT_ABS_PATH}"/../../{{name}}.tar.gz -T -
+if [ -e "${SCRIPT_ABS_PATH}"/../../"$1" ]; then
+  [[ -e ${SCRIPT_ABS_PATH}/../../"$1".tar.gz ]] && rm -fr "${SCRIPT_ABS_PATH}"/../../"$1".tar.gz
+  nix-store --query --requisites "${SCRIPT_ABS_PATH}"/../../"$1" | tar zPcf "${SCRIPT_ABS_PATH}"/../../"$1".tar.gz -T -
 else
-  info "No ${SCRIPT_ABS_PATH}/../../result, can't pack tarball"
+  info "No ${SCRIPT_ABS_PATH}/../../$1, can't pack tarball"
 fi
 
 done_banner "Top level" "project build - packing"
