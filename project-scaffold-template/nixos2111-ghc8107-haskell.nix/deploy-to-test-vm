@@ -25,7 +25,7 @@ if [ -f "$SCRIPT_ABS_PATH"/.I.am.here.to.indicate.this.is.the.building.machine ]
     set -u
 
     # build the boundle for the specific release target
-    nix-build ./release.nix --arg releasePhase '"test"' --arg releaseHost \""$1"\" --arg genSystemdUnit "$2" --arg userName "$3" --attr "$4" --out-link "$4"
+    nix-build ./release.nix --arg releasePhase '"test"' --arg releaseHost \""$1"\" --arg genSystemdUnit "$2" --arg userName \""$3"\" --attr "$4" --out-link "$4"
 
     # save the env
     MY_NIX_STORE_PATH=$(readlink "$SCRIPT_ABS_PATH"/"$4")
