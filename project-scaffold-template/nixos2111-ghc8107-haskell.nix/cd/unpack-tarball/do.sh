@@ -15,9 +15,9 @@ begin_banner "Top level" "project deploy - unpacking"
 
 if [ -e "${SCRIPT_ABS_PATH}"/../../"$RELEASE_TARBALL_NAME".tar.gz ]; then
   if [ -n "$RELEASE_USER_NAME" ]; then
-    tar zPxf "$SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME.tar.gz" --owner "$RELEASE_USER_NAME" --group "$RELEASE_USER_NAME"
+    sudo tar zPxf "$SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME.tar.gz" --owner "$RELEASE_USER_NAME" --group "$RELEASE_USER_NAME"
   else
-    tar zPxf "$SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME.tar.gz"
+    sudo tar zPxf "$SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME.tar.gz"
   fi
 else
   my_exit "No ${SCRIPT_ABS_PATH}/../../$RELEASE_TARBALL_NAME.tar.gz found, can't unpack tarball" 127
