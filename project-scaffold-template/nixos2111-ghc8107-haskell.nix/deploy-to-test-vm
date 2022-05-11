@@ -31,10 +31,10 @@ if [ -f "$SCRIPT_ABS_PATH"/.I.am.here.to.indicate.this.is.the.building.machine ]
     MY_NIX_STORE_PATH=$(readlink "$SCRIPT_ABS_PATH"/"$4")
 
     # save the nix path for use on the deployed machine
-    echo "$MY_NIX_STORE_PATH" > "$SCRIPT_ABS_PATH"/.build.output.nix.store.path
-    echo "$2" > "$SCRIPT_ABS_PATH"/.release.has.systemd.service
-    echo "$3" > "$SCRIPT_ABS_PATH"/.release.user.name
-    echo "$4" > "$SCRIPT_ABS_PATH"/.release.tarball.name
+    echo "$MY_NIX_STORE_PATH" > "$SCRIPT_ABS_PATH"/.build.output.nix.store.path."$4"
+    echo "$2" > "$SCRIPT_ABS_PATH"/.release.has.systemd.service."$4"
+    echo "$3" > "$SCRIPT_ABS_PATH"/.release.user.name."$4"
+    echo "$4" > "$SCRIPT_ABS_PATH"/.release.tarball.name."$4"
 
     # pack the build artifact up with the dependencies
     "$SCRIPT_ABS_PATH"/ci/pack-tarball/do.sh "$4"
@@ -44,9 +44,9 @@ if [ -f "$SCRIPT_ABS_PATH"/.I.am.here.to.indicate.this.is.the.building.machine ]
 
 else
     #RELEASE_DOCKER_ON_TARGET="true" RELEASE_USER_NAME="$3" "$SCRIPT_ABS_PATH"/cd/prepare-env/do.sh
-    RELEASE_DOCKER_ON_TARGET="" RELEASE_USER_NAME="$(cat "$SCRIPT_ABS_PATH"/.release.user.name)" "$SCRIPT_ABS_PATH"/cd/prepare-env/do.sh
-    RELEASE_USER_NAME="$(cat "$SCRIPT_ABS_PATH"/.release.user.name)" RELEASE_TARBALL_NAME="$(cat "$SCRIPT_ABS_PATH"/.release.tarball.name)" "$SCRIPT_ABS_PATH"/cd/unpack-tarball/do.sh
-    RELEASE_HAS_SYSTEMD_SERVICE="$(cat "$SCRIPT_ABS_PATH"/.release.has.systemd.service)" NIX_STORE_PATH="$(cat "$SCRIPT_ABS_PATH"/.build.output.nix.store.path)" "$SCRIPT_ABS_PATH"/cd/fix-up/do.sh
+    RELEASE_DOCKER_ON_TARGET="" RELEASE_USER_NAME="$(cat "$SCRIPT_ABS_PATH"/.release.user.name."$4")" "$SCRIPT_ABS_PATH"/cd/prepare-env/do.sh
+    RELEASE_USER_NAME="$(cat "$SCRIPT_ABS_PATH"/.release.user.name."$4")" RELEASE_TARBALL_NAME="$(cat "$SCRIPT_ABS_PATH"/.release.tarball.name."$4")" "$SCRIPT_ABS_PATH"/cd/unpack-tarball/do.sh
+    RELEASE_HAS_SYSTEMD_SERVICE="$(cat "$SCRIPT_ABS_PATH"/.release.has.systemd.service."$4")" NIX_STORE_PATH="$(cat "$SCRIPT_ABS_PATH"/.build.output.nix.store.path."$4")" "$SCRIPT_ABS_PATH"/cd/fix-up/do.sh
 fi
 
 done_banner "Top level" "project deploy - test-vm"
