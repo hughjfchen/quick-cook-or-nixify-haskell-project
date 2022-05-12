@@ -25,10 +25,14 @@ let
       MY_DB_PASS=$(grep "DB_PASS" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
       MY_DB_NAME=$(grep "DB_NAME" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
       MY_JWT_SECRET=$(grep "JWT_SECRET" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
-      cp -R $src/db/src/* $out/
-      rm -fr $out/init.sql
-      sed -e "1i drop database if exists $MY_DB_NAME;" -e "1i create database $MY_DB_NAME;" -e "1i \\\\\c $MY_DB_NAME" -e "s/\$DB_ANON_ROLE/$MY_DB_ANON_ROLE/g" -e "s/\$DB_USER/$MY_DB_USER/g" -e "s/\$DB_PASS/$MY_DB_PASS/g" -e "s/\$JWT_SECRET/$MY_JWT_SECRET/g" $src/db/src/init.sql > $out/init.sql
+      cp -R $src/db/src/libs $out/
+      cp -R $src/db/src/data $out/
+      cp -R $src/db/src/api $out/
+      cp -R $src/db/src/sample_data $out/
+      mkdir -p $out/authorization
+      cp $src/db/src/authorization/roles.sql $out/authorization
       sed "2i grant usage on schema data to $MY_DB_USER;" $src/db/src/authorization/privileges.sql > $out/authorization/privileges.sql
+      sed -e "1i drop database if exists $MY_DB_NAME;" -e "1i create database $MY_DB_NAME;" -e "1i \\\\\c $MY_DB_NAME" -e "s/\$DB_ANON_ROLE/$MY_DB_ANON_ROLE/g" -e "s/\$DB_USER/$MY_DB_USER/g" -e "s/\$DB_PASS/$MY_DB_PASS/g" -e "s/\$JWT_SECRET/$MY_JWT_SECRET/g" $src/db/src/init.sql > $out/init.sql
     '';
   };
   mk-my-postgresql-service-unit = (nPkgs.nixos ({ lib, pkgs, config, ... }: {
