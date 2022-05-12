@@ -30,7 +30,7 @@ if [ -f "${SCRIPT_ABS_PATH}"/../../"$1".tar.gz ]; then
     "$PACK_FILE_DIR"
 
   # clean up some unused stuff
-  rm -fr "$PACK_FILE_DIR"/nix "$PACK_FILE_DIR"/arion
+  rm -fr "$PACK_FILE_DIR"/cd/nix "$PACK_FILE_DIR"/cd/arion
 
   tar zcf "${SCRIPT_ABS_PATH}"/../../"$1"_dist.tar.gz -C "$STORE_PACK_FILES_TEMP_DIR" ./"$1"
   rm -fr "$STORE_PACK_FILES_TEMP_DIR"
