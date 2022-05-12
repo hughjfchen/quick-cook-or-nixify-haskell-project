@@ -14,7 +14,7 @@ SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
 begin_banner "Top level" "project deploy - fix-up"
 
 # some command fix up for systemd service, especially web server
-getent group nogroup > /dev/null || groupadd nogroup
+getent group nogroup > /dev/null || sudo groupadd nogroup
 
 if [ -n "$NIX_STORE_PATH" ]; then
   if [ -n "$RELEASE_HAS_SYSTEMD_SERVICE" ] && [ "true" == "$RELEASE_HAS_SYSTEMD_SERVICE" ]; then
