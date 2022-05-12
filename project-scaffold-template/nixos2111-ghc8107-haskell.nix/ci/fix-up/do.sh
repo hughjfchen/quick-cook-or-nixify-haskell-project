@@ -15,7 +15,25 @@ begin_banner "Top level" "project build - fix-up"
 
 if [ -f "${SCRIPT_ABS_PATH}"/../../"$1".tar.gz ]; then
   [[ -e ${SCRIPT_ABS_PATH}/../../"$1"_dist.tar.gz ]] && rm -fr "${SCRIPT_ABS_PATH}"/../../"$1"_dist.tar.gz
-  tar zcf "${SCRIPT_ABS_PATH}"/../../"$1"_dist.tar.gz -C "$SCRIPT_ABS_PATH/../../" ./"$1".tar.gz ./cd/common ./cd/prepare-env ./cd/unpack-tarball ./cd/fix-up ./.build.output.nix.store.path."$1" ./.release.has.systemd.service."$1" ./.release.user.name."$1" ./.release.tarball.name."$1" ./"$2"
+  # make a temp dir, make a $1 dir under the temp dir, copy all need-to-pack files under that dir, cd to that temp and pack them up
+  STORE_PACK_FILES_TEMP_DIR=$(mktemp -d)
+  PACK_FILE_DIR="$STORE_PACK_FILES_TEMP_DIR/$1"
+  mkdir -p "$PACK_FILE_DIR"
+  cp -R "$SCRIPT_ABS_PATH/../../$1.tar.gz" \
+    "$SCRIPT_ABS_PATH"/../../cd \
+    "$SCRIPT_ABS_PATH"/../../.built.attribute.name \
+    "$SCRIPT_ABS_PATH"/../../.build.output.nix.store.path \
+    "$SCRIPT_ABS_PATH"/../../.release.has.systemd.service \
+    "$SCRIPT_ABS_PATH"/../../.release.user.name \
+    "$SCRIPT_ABS_PATH"/../../.release.tarball.name \
+    "$SCRIPT_ABS_PATH"/../../"$2" \
+    "$PACK_FILE_DIR"
+
+  # clean up some unused stuff
+  rm -fr "$PACK_FILE_DIR"/nix "$PACK_FILE_DIR"/arion
+
+  tar zcf "${SCRIPT_ABS_PATH}"/../../"$1"_dist.tar.gz -C "$STORE_PACK_FILES_TEMP_DIR" ./"$1"
+  rm -fr "$STORE_PACK_FILES_TEMP_DIR"
 else
   warn "No ${SCRIPT_ABS_PATH}/$1.tar.gz found , can't pack distributable tarball"
 fi

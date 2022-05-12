@@ -12,6 +12,194 @@ let
   sPkgs = pkgs.x86-musl64; # for the fully static build
   lib = nPkgs.lib; # lib functions from the native package set
 
+  # common services
+  my-db-init-script = nPkgs.stdenv.mkDerivation {
+    src = ./.;
+    name = "my-db-init-script";
+    dontBuild = true;
+    dontUnpack = true;
+    installPhase = ''
+      mkdir -p $out
+      MY_DB_ANON_ROLE=$(grep "DB_ANON_ROLE" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_USER=$(grep "DB_USER" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_PASS=$(grep "DB_PASS" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_NAME=$(grep "DB_NAME" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_JWT_SECRET=$(grep "JWT_SECRET" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      cp -R $src/db/src/* $out/
+      rm -fr $out/init.sql
+      sed -e "1i drop database if exists $MY_DB_NAME;" -e "1i create database $MY_DB_NAME;" -e "1i \\\\\c $MY_DB_NAME" -e "s/\$DB_ANON_ROLE/$MY_DB_ANON_ROLE/g" -e "s/\$DB_USER/$MY_DB_USER/g" -e "s/\$DB_PASS/$MY_DB_PASS/g" -e "s/\$JWT_SECRET/$MY_JWT_SECRET/g" $src/db/src/init.sql > $out/init.sql
+      sed "2i grant usage on schema data to $MY_DB_USER;" $src/db/src/authorization/privileges.sql > $out/authorization/privileges.sql
+    '';
+  };
+  mk-my-postgresql-service-unit = (nPkgs.nixos ({ lib, pkgs, config, ... }: {
+    config.services.postgresql = {
+      enable = true;
+      package = nPkgs.postgresql_9_6;
+      port = 5432;
+      dataDir = "/var/${userName}/data";
+      initdbArgs = [ ];
+      initialScript = my-db-init-script + /init.sql;
+      ensureDatabases = [ ];
+      ensureUsers = [ ];
+      enableTCPIP = true;
+      authentication = nPkgs.lib.mkOverride 10 ''
+        local all all trust
+        host all all all md5
+      '';
+      settings = { };
+      #superUser = "postgres"; # read-only
+
+    };
+  })).config.systemd.units."postgresql.service".unit;
+
+  my-postgrest-config = nPkgs.stdenv.mkDerivation {
+    src = ./.;
+    name = "my-postgrest-config";
+    dontBuild = true;
+    dontUnpack = true;
+    installPhase = ''
+      mkdir -p $out
+      MY_DB_USER=$(grep "DB_USER" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_PASS=$(grep "DB_PASS" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_HOST=$(grep "DB_HOST" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_PORT=$(grep "DB_PORT" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_NAME=$(grep "DB_NAME" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_SCHEMA=$(grep "DB_SCHEMA" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_ANON_ROLE=$(grep "DB_ANON_ROLE" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_DB_POOL=$(grep "DB_POOL" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_JWT_SECRET=$(grep "JWT_SECRET" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_MAX_ROWS=$(grep "MAX_ROWS" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_PRE_REQUEST=$(grep "PRE_REQUEST" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      MY_SERVER_PROXY_URI=$(grep "SERVER_PROXY_URI" $src/.env | tr -d " " | awk -F"=" '{print $NF}')
+      echo "db-uri=\"postgres://$MY_DB_USER:$MY_DB_PASS@$MY_DB_HOST:$MY_DB_PORT/$MY_DB_NAME\"" > $out/postgrest.conf
+      [ -n "$MY_DB_ANON_ROLE" ] && echo "db-anon-role=\"$MY_DB_ANON_ROLE\"" >> $out/postgrest.conf
+      [ -n "$MY_DB_SCHEMA" ] && echo "db-schema=\"$MY_DB_SCHEMA\"" >> $out/postgrest.conf
+      [ -n "$MY_MAX_ROWS" ] && echo "db-max-rows=$MY_MAX_ROWS" >> $out/postgrest.conf
+      [ -n "$MY_DB_POOL" ] && echo "db-pool=$MY_DB_POOL" >> $out/postgrest.conf
+      [ -n "$MY_PRE_REQUEST" ] && echo "db-pre-request=\"$MY_PRE_REQUEST\"" >> $out/postgrest.conf
+      [ -n "$MY_JWT_SECRET" ] && echo "jwt-secret=\"$MY_JWT_SECRET\"" >> $out/postgrest.conf
+    '';
+  };
+
+  # my services dependencies
+  my-postgrest-bin-sh = nPkgs.writeShellApplication {
+    name = "my-postgrest-bin-sh";
+    runtimeInputs = [ nPkgs.haskellPackages.postgrest ];
+    text = ''
+      [ ! -f /var/${userName}/config/postgrest.conf ] && cp ${my-postgrest-config}/postgrest.conf /var/${userName}/config/postgrest.conf
+      postgrest /var/${userName}/config/postgrest.conf "$@"
+    '';
+  };
+
+  # following define the service
+  my-postgrest-service = { lib, pkgs, config, ... }:
+    let cfg = config.services.my-postgrest;
+    in {
+      options = {
+        services.my-postgrest = {
+          enable = lib.mkOption {
+            default = true;
+            type = lib.types.bool;
+            description = "enable to generate a config to start the service";
+          };
+          # add extra options here, if any
+        };
+      };
+      config = lib.mkIf cfg.enable {
+        systemd.services.my-postgrest = {
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" ];
+          description = "my postgrest service";
+          serviceConfig = {
+            Type = "simple";
+            User = "${userName}";
+            ExecStart = "${my-postgrest-bin-sh}/bin/my-postgrest-bin-sh";
+            Restart = "on-failure";
+          };
+        };
+      };
+    };
+  mk-my-postgrest-service-unit = nPkgs.writeText "my-postgrest.service"
+    (nPkgs.nixos ({ lib, pkgs, config, ... }: {
+      imports = [ my-postgrest-service ];
+    })).config.systemd.units."my-postgrest.service".text;
+
+  my-openresty-config = nPkgs.stdenv.mkDerivation {
+    src = ./.;
+    name = "my-openresty-config";
+    dontBuild = true;
+    dontUnpack = true;
+    installPhase = ''
+      mkdir -p $out
+      cp -R $src/openresty/lua $out/
+      mkdir -p $out/nginx/conf
+      cp -R $src/openresty/nginx/* $out/nginx/conf
+      cp -R $src/openresty/html $out/nginx
+      sed "/OPENRESTY_DOC_ROOT/d; 1i OPENRESTY_DOC_ROOT=/var/${userName}/openresty/nginx/html" $src/.env > $out/env
+      mkdir -p $out/lualib
+      ln -s $out/lua $out/lualib/user_code
+      ln -s $out/lualib $out/nginx/lualib
+    '';
+  };
+
+  # my services dependencies
+  my-openresty-bin-sh = nPkgs.writeShellApplication {
+    name = "my-openresty-bin-sh";
+    runtimeInputs = [ nPkgs.openresty ];
+    text = ''
+      [ ! -d /var/log/nginx ] && mkdir -p /var/log/nginx && chown -R ${userName}:${userName} /var/log/nginx
+      [ ! -d /var/cache/nginx/client_body ] && mkdir -p /var/cache/nginx/client_body && chown -R ${userName}:${userName} /var/cache/nginx
+      [ ! -d /var/${userName}/openresty ] && mkdir -p /var/${userName}/openresty && cp -R ${my-openresty-config}/* /var/${userName}/openresty && chown -R ${userName}:${userName} /var/${userName}/openresty
+      [ ! -d /var/${userName}/openresty/nginx/logs ] && mkdir -p /var/${userName}/openresty/nginx/logs && chown -R ${userName}:${userName} /var/${userName}/openresty/nginx/logs
+      [ ! -d /var/${userName}/openresty/nginx/html/dumpfiles ] && mkdir -p /var/${userName}/openresty/nginx/html/dumpfiles && chown -R nobody:nogroup /var/${userName}/openresty/nginx/html/dumpfiles
+      sed '/^\s*#.*$/d; /^\s*$/d; s/^/export /g' /var/${userName}/openresty/env > /var/${userName}/openresty/env.export
+      # shellcheck source=/dev/null
+      . /var/${userName}/openresty/env.export
+      openresty -p "/var/${userName}/openresty/nginx" -c "/var/${userName}/openresty/nginx/conf/nginx.conf" "$@"
+    '';
+  };
+
+  # following define the service
+  my-openresty-service = { lib, pkgs, config, ... }:
+    let cfg = config.services.my-openresty;
+    in {
+      options = {
+        services.my-openresty = {
+          enable = lib.mkOption {
+            default = true;
+            type = lib.types.bool;
+            description = "enable to generate a config to start the service";
+          };
+          # add extra options here, if any
+        };
+      };
+      config = lib.mkIf cfg.enable {
+        systemd.services.my-openresty = {
+          wantedBy = [ "multi-user.target" ];
+          after = [ "network.target" ];
+          description = "my openresty service";
+          serviceConfig = {
+            Type = "forking";
+            ExecStartPre = ''
+              ${my-openresty-bin-sh}/bin/my-openresty-bin-sh -t -q -g "daemon on; master_process on;"
+            '';
+            ExecStart = ''
+              ${my-openresty-bin-sh}/bin/my-openresty-bin-sh -g "daemon on; master_process on;"
+            '';
+            ExecReload = ''
+              ${my-openresty-bin-sh}/bin/my-openresty-bin-sh -g "daemon on; master_process on;" -s reload
+            '';
+            ExecStop = "${my-openresty-bin-sh}/bin/my-openresty-bin-sh -s stop";
+            Restart = "on-failure";
+          };
+        };
+      };
+    };
+  mk-my-openresty-service-unit = nPkgs.writeText "my-openresty.service"
+    (nPkgs.nixos ({ lib, pkgs, config, ... }: {
+      imports = [ my-openresty-service ];
+    })).config.systemd.units."my-openresty.service".text;
+
   # extra runtime dependencies
   # eclipse package and plugins
   my-eclipse-mat = nPkgs.eclipse-mat.overrideAttrs (oldAttrs: { buildCommand = nPkgs.lib.concatStringsSep "\n" [
@@ -141,6 +329,34 @@ let
   ).config.systemd.units."{{name}}.service".text;
 in
 { inherit nativePkgs pkgs;
+
+  mk-my-postgresql-service-systemd-setup-or-bin-sh = if genSystemdUnit then
+    (nPkgs.setupSystemdUnits {
+      namespace = "my-postgresql";
+      units = {
+        "my-postgresql.service" = mk-my-postgresql-service-unit
+          + /postgresql.service;
+      };
+    })
+  else
+    { };
+
+  mk-my-postgrest-service-systemd-setup-or-bin-sh = if genSystemdUnit then
+    (nPkgs.setupSystemdUnits {
+      namespace = "my-postgrest";
+      units = { "my-postgrest.service" = mk-my-postgrest-service-unit; };
+    })
+  else
+    my-postgrest-bin-sh;
+
+  mk-my-openresty-service-systemd-setup-or-bin-sh = if genSystemdUnit then
+    (nPkgs.setupSystemdUnits {
+      namespace = "my-openresty";
+      units = { "my-openresty.service" = mk-my-openresty-service-unit; };
+    })
+  else
+    my-openresty-bin-sh;
+
   mk-{{name}}-service-systemd-setup-or-bin-sh = if genSystemdUnit then
     (nPkgs.setupSystemdUnits {
       namespace = "{{name}}";
