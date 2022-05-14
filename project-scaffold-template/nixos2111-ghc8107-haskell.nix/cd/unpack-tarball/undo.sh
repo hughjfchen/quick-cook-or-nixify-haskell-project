@@ -9,10 +9,12 @@ fi
 
 init_with_root_or_sudo "$0"
 
-begin_banner "Top level" "project deploy - packing"
+begin_banner "Top level" "project deploy - unpacking - undo"
 
 set +u
 [[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
 set -u
 
-done_banner "Top level" "project deploy - packing"
+# do we need to remove the nix stoer path? but there're unique, leave it for now.a
+
+done_banner "Top level" "project deploy - unpacking - undo"
