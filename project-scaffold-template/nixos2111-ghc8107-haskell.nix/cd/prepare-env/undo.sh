@@ -13,7 +13,7 @@ begin_banner "Top level" "deploy env unprepare"
 
 if [ -d /var/"$RELEASE_USER_NAME" ]; then
     info "/var/$RELEASE_USER_NAME directory found, delete it..."
-    sudo rm -fr /var/"RELEASE_USER_NAME"
+    sudo rm -fr /var/"$RELEASE_USER_NAME"
 fi
 
 set +e
