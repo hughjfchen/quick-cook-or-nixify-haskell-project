@@ -19,7 +19,7 @@ set -u
 
 # do we need to remove the nix stoer path? but there're unique, leave it for now.a
 # ok, I want to do it
-if [ -f "$SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME" ]; then
+if [ -f "$SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME.tar.gz" ]; then
     tar zPtvf "$SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME.tar.gz"|awk '{print $NF}'|grep '/nix/store/'|awk -F'/' '{print "/nix/store/" $4}'|sort|uniq|xargs sudo rm -fr
 else
     warn "cannot find the release tarball at $SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME.tar.gz, skip the undo phase."
