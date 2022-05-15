@@ -9,6 +9,8 @@ fi
 
 init_with_root_or_sudo "$0"
 
+SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
+
 begin_banner "Top level" "project deploy - unpacking - undo"
 
 set +u
@@ -16,5 +18,11 @@ set +u
 set -u
 
 # do we need to remove the nix stoer path? but there're unique, leave it for now.a
+# ok, I want to do it
+if [ -f "$SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME" ]; then
+    tar zPtvf "$SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME"|awk '{print $NF}'|grep '/nix/store/'|awk -F'/' '{print "/nix/store/" $4}'|sort|uniq|xargs sudo rm -fr
+else
+    warn "cannot find the release tarball at $SCRIPT_ABS_PATH/../../$RELEASE_TARBALL_NAME, skip the undo phase."
+fi
 
 done_banner "Top level" "project deploy - unpacking - undo"
