@@ -45,7 +45,7 @@ if [ -f "$SCRIPT_ABS_PATH"/.I.am.here.to.indicate.this.is.the.building.machine ]
     "$SCRIPT_ABS_PATH"/ci/fix-up/do.sh "$6" "$(basename "$0")"
 
 else
-    if [ -n "$DEPLOY_UNDO" ]; then
+    if [ -n "${DEPLOY_UNDO+set}" ]; then
         BUILT_ATTRIBUTE_NAME=$(cat "$SCRIPT_ABS_PATH"/.built.attribute.name) RELEASE_HAS_SYSTEMD_SERVICE="$(cat "$SCRIPT_ABS_PATH"/.release.has.systemd.service)" NIX_STORE_PATH="$(cat "$SCRIPT_ABS_PATH"/.build.output.nix.store.path)" "$SCRIPT_ABS_PATH"/cd/fix-up/undo.sh
         BUILT_ATTRIBUTE_NAME=$(cat "$SCRIPT_ABS_PATH"/.built.attribute.name) RELEASE_USER_NAME="$(cat "$SCRIPT_ABS_PATH"/.release.user.name)" RELEASE_TARBALL_NAME="$(cat "$SCRIPT_ABS_PATH"/.release.tarball.name)" "$SCRIPT_ABS_PATH"/cd/unpack-tarball/undo.sh
         BUILT_ATTRIBUTE_NAME=$(cat "$SCRIPT_ABS_PATH"/.built.attribute.name) RELEASE_DOCKER_ON_TARGET="" RELEASE_USER_NAME="$(cat "$SCRIPT_ABS_PATH"/.release.user.name)" "$SCRIPT_ABS_PATH"/cd/prepare-env/undo.sh
