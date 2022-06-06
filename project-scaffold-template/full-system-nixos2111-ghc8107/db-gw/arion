@@ -1,0 +1,2 @@
+#!/bin/env sh
+arion_compose_datadir=$(dirname "$0")/cd $(dirname "$0")/cd/arion "$@"

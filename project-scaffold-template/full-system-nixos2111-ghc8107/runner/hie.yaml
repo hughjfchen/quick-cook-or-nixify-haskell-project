@@ -1,0 +1,13 @@
+cradle:
+  cabal:
+    - path: "./src"
+      component: "lib:java-analyzer-runner"
+
+    - path: "./app"
+      component: "java-analyzer-runner:exe:java-analyzer-runner"
+
+    - path: "./tests"
+      component: "java-analyzer-runner:test:java-analyzer-runner-tests"
+
+    - path: "./benchmark"
+      component: "java-analyzer-runner:exe:java-analyzer-runner-benchmark"

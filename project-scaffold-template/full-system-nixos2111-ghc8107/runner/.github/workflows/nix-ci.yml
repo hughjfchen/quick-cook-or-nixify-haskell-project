@@ -1,0 +1,74 @@
+name: nix-ci
+
+# Trigger the workflow on push or pull request, but only for the main branch
+on:
+  pull_request:
+  push:
+    branches: [master]
+
+jobs:
+  nix-ci:
+    name:  ${{ matrix.os }} / ghc ${{ matrix.ghc }} 
+    runs-on:  ${{ matrix.os }} 
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        ghc:
+          - 8.10.7
+        exclude:
+          - os: macOS-latest
+            ghc: 8.8.4
+          - os: windows-latest
+            ghc: 8.8.4
+
+    steps:
+    - name: checkout source
+      uses: actions/checkout@v2.3.3
+      if: github.event.action == 'opened' || github.event.action == 'synchronize' || github.event.ref == 'refs/heads/master'
+
+    - name: adjust nix store path permission for restore
+      run: |
+        # Create with liberal rights, otherwise cache action will complain
+        # about permission errors.
+        sudo mkdir -p /nix/store
+        sudo chmod -R 777 /nix
+
+    - name: Cache nix env take N+1
+      uses: actions/cache@v2
+      with:
+        path: |
+          # See https://github.com/actions/cache/pull/726
+          /nix/store/**
+          # Missing something?
+          /nix/var/nix/*/*
+          /nix/var/nix/db/*
+          /nix/var/nix/db/*/**
+          !/nix/var/nix/daemon-socket/socket
+          !/nix/var/nix/userpool/*
+          !/nix/var/nix/gc.lock
+          !/nix/var/nix/db/big-lock
+          !/nix/var/nix/db/reserved
+        key: java-analyzer-runner-nixos-2111-ghc8107-cache
+
+    - name: install Nix quickly with iohk cache
+      uses: nixbuild/nix-quick-install-action@v10
+      with:
+        nix_conf: |
+          trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ= cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY=
+          substituters = https://hydra.iohk.io https://cache.nixos.org/
+
+    - name: build the default for normal commit
+      run: nix-build
+      if: startsWith(github.ref, 'refs/tags/') == false
+
+    - name: build the cross platform target(s) for release
+      run: nix-build ./cross-build.nix
+      if: startsWith(github.ref, 'refs/tags/') == true
+
+    - name: release to github if a tag pushed
+      uses: softprops/action-gh-release@v0.1.14
+      if: startsWith(github.ref, 'refs/tags/')
+      with:
+        files: |
+          CHANGELOG.md
+          result/bin/*

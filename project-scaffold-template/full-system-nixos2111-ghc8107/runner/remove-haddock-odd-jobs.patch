@@ -1,0 +1,13 @@
+--- odd-jobs.orig/src/OddJobs/Types.hs	2021-11-12 20:19:17.603341543 -0600
++++ odd-jobs/src/OddJobs/Types.hs	2021-11-12 20:20:35.894826297 -0600
+@@ -317,10 +317,6 @@
+   -- of deployment).
+   -- , cfgPidFile :: Maybe FilePath
+ 
+-  -- | A "structured logging" function that you need to provide. The
+-  -- @odd-jobs@ library does NOT use the standard logging interface provided by
+-  -- 'monad-logger' on purpose. Also look at 'cfgJobType' and 'defaultLogStr'
+-  --
+   , cfgLogger :: LogLevel -> LogEvent -> IO ()
+ 
+   -- | How to extract the "job type" from a 'Job'. If you are overriding this,

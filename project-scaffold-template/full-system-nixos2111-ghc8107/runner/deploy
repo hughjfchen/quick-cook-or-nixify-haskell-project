@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+if ! type dirname > /dev/null 2>&1; then
+    echo "Not even a linux or macOS, Windoze? We don't support it. Abort."
+    exit 1
+fi
+
+. "$(dirname "$0")"/cd/common/common.sh
+
+init_with_root_or_sudo "$0"
+
+SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
+
+begin_banner "Top level" "project deploy - generic"
+
+if [ $# != 2 ]; then
+    echo "usage: $(basename "$0") deployTargetSite releasePhase"
+    exit 125
+fi
+[ -d "$SCRIPT_ABS_PATH/../env/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/../env/site/$1/phase/$2 not exists" && exit 126)
+[ -d "$SCRIPT_ABS_PATH/../config/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/../config/site/$1/phase/$2 not exists" && exit 126)
+
+set +u
+[ -e "$HOME"/.nix-profile/etc/profile.d/nix.sh ] && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
+set -u
+
+# build the boundle for the specific release target
+nix-build ./release.nix --arg site \""$1"\" --arg phase \""$2"\" --attr "mk-my-release-packer" --out-link "mk-my-release-packer"
+
+# pack the build artifact up with the dependencies
+"$SCRIPT_ABS_PATH/mk-my-release-packer/bin/mk-release-packer-for-$1-$2"
+
+done_banner "Top level" "project deploy - generic"
