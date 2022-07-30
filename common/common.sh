@@ -112,7 +112,7 @@ check_dist_or_OS () {
 
 ### guard that the caller of the script must be root or has sudo right
 guard_root_or_sudo () {
-    if [[ $EUID -gt 0 ]] && ! sudo -v >/dev/null 2>&1; then
+    if [[ $EUID -gt 0 ]] && ! sudo echo  >/dev/null 2>&1; then
         return 1
     else
         return 0

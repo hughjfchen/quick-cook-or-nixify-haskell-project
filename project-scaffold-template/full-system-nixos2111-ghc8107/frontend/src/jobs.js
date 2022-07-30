@@ -24,9 +24,9 @@ export const JobList = props => (
        <Datagrid>
          <TextField source="payload.tag" label="Parse Type"/>
          <UrlFieldWithLastFileNameAsLinkText source="payload.contents.contents" download={true} label="Dump File"/>
-         <DateField source="created_at" showTime={true} locales='zh-CN' options={{hour12: false}}/>
-         <DateField source="run_at" showTime={true} locales='zh-CN' options={{hour12: false}}/>
-         <DateField source="updated_at" showTime={true} locales='zh-CN' options={{hour12: false}}/>
+         <DateField source="created_at" showTime={true} locales='zh-CN' options={%raw%}{{hour12: false}}{%endraw%}/>
+         <DateField source="run_at" showTime={true} locales='zh-CN' options={%raw%}{{hour12: false}}{%endraw%}/>
+         <DateField source="updated_at" showTime={true} locales='zh-CN' options={%raw%}{{hour12: false}}{%endraw%}/>
          <TextField source="status" />
          <UrlFieldWithCustomLinkText source="last_update.report_url" linkText="Report" target="_blank" label="Report"/>
        </Datagrid>

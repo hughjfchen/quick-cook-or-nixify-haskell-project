@@ -1,4 +1,6 @@
-self: prev: {
-  # sample pakage override
-  # xxxx = prev.xxxx.overrideAttrs (oldAttr: rec { buildInputs = prev.xxxx.buildInputs ++ [ self.openssl ]; });
-}
+self: prev:
+with prev.lib;
+mapAttrs' (attr: _: {
+  name = removeSuffix ".nix" attr;
+  value = import (./. + "/${attr}") self prev;
+}) (filterAttrs (attr: _: attr != "default.nix") (builtins.readDir ./.))
