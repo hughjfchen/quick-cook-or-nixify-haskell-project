@@ -41,7 +41,8 @@ case $3 in
 
          "${SCRIPT_ABS_PATH}"/fix-up/do.sh "$1" "$2"
 	     # for executables, we need to copy to override them after applying tempalte(Why?)
-	     cp "${SCRIPT_ABS_PATH}"/deployment-framework/arion "$1/$2/cd/" && chmod +x "$1/$2/cd/arion"
+	     [[ -d "$1/$2/cd" ]] && cp "${SCRIPT_ABS_PATH}"/deployment-framework/arion "$1/$2/cd/" && chmod +x "$1/$2/cd/arion"
+	     [[ -d "$1/$2/$2/cd" ]] && cp "${SCRIPT_ABS_PATH}"/deployment-framework/arion "$1/$2/$2/cd/" && chmod +x "$1/$2/$2/cd/arion"
          ;;
   *)
          ;;

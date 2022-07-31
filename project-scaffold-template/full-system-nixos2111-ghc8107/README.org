@@ -2,4 +2,4 @@
 
 * What
 
-This is the mono repository for the java dump and GC analzyer application.
+This is the mono repository for a haskell-based application.

@@ -1,7 +1,7 @@
 
 const postgrestAuth = {
   login: ({ username, password }) => {
-    const request = new Request('http://www.detachmentsoft.top/rest/rpc/login', {
+    const request = new Request('{process.env.REACT_APP_BASE_URL}/rest/rpc/login', {
       method: 'POST',
       body: JSON.stringify({ email: username, password }),
       headers: new Headers({ 'Content-Type': 'application/json'

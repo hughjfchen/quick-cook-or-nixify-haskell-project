@@ -1,8 +1,8 @@
 import { fetchUtils } from "react-admin";
 import postgrestDataProvider from '@raphiniert/ra-data-postgrest';
 
-const servicesHost = 'http://www.detachmentsoft.top';
-const servicesHostHome = 'http://www.detachmentsoft.top/rest';
+const servicesHost = '{process.env.REACT_APP_BASE_URL}';
+const servicesHostHome = '{process.env.REACT_APP_BASE_URL}/rest';
 
 const httpClient = (url, options = {}) => {
     if (!options.headers) {

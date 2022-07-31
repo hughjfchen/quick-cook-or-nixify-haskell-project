@@ -70,7 +70,7 @@ let
     runtimeInputs = {{name}}-bin-sh-paths;
     # wrap the executable, suppose it accept a --config commandl ine option to load the config
     text = ''
-      ${sPkgs.java-analyzer-runner.java-analyzer-runner-exe.exeName} --config.file="${{{name}}-config-kv}" "$@"
+      ${sPkgs.java-analyzer-runner.java-analyzer-runner-exe.exeName} --config.file="{%raw%}${{%endraw%}{{name}}-config-kv}" "$@"
     '';
   };
   # following define the service
@@ -91,9 +91,9 @@ let
         description = "${pkgName} service";
         serviceConfig = {
           Type = "forking";
-          User = "${{{name}}-env.runner.processUser}";
+          User = "{%raw%}${{%endraw%}{{name}}-env.runner.processUser}";
           ExecStart =
-            "${{{name}}-bin-sh}/bin/${{{name}}-bin-sh.name} --command=Start";
+            "{%raw%}${{%endraw%}{{name}}-bin-sh}/bin/{%raw%}${{%endraw%}{{name}}-bin-sh.name} --command=Start";
           Restart = "on-failure";
         };
       });
@@ -149,7 +149,7 @@ in rec {
     env = {{name}}-env.runner;
     payloadPath = setup-and-unsetup-or-bin-sh;
     inherit innerTarballName;
-    execName = "${{{name}}-bin-sh.name}";
+    execName = "{%raw%}${{%endraw%}{{name}}-bin-sh.name}";
     startCmd = "--command=Start";
     stopCmd = "--command=Stop";
   };
@@ -157,7 +157,7 @@ in rec {
     env = {{name}}-env.runner;
     payloadPath = setup-and-unsetup-or-bin-sh;
     inherit innerTarballName;
-    execName = "${{{name}}-bin-sh.name}";
+    execName = "{%raw%}${{%endraw%}{{name}}-bin-sh.name}";
   };
   mk-my-release-packer = deploy-packer.mk-release-packer {
     referencePath = mk-{{name}}-reference;

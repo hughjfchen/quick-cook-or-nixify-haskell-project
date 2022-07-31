@@ -24,7 +24,7 @@ let
   };
 
   # the deployment env
-  {{name}}-frontend-env = (import
+  my-frontend-env = (import
     (builtins.fetchGit { url = "https://github.com/hughjfchen/deploy-env"; }) {
       pkgs = nPkgs;
       modules = [
@@ -36,7 +36,7 @@ let
     }).env;
 
   # app and dependent config
-  {{name}}-frontend-config = (import (builtins.fetchGit {
+  my-frontend-config = (import (builtins.fetchGit {
     url = "https://github.com/hughjfchen/deploy-config";
   }) {
     pkgs = nPkgs;
@@ -46,43 +46,26 @@ let
       ../config/site/${site}/phase/${phase}/api-gw.nix
       ../config/site/${site}/phase/${phase}/messaging.nix
     ];
-    env = {{name}}-frontend-env;
+    env = my-db-env;
   }).config;
 
-  my-frontend-build = (import ./default.nix { }).{{name}}-frontend;
-  # my services dependencies
-  # following define the service
-  my-frontend-distributable =
-    nPkgs.runCommand "my-frontend-distributable" { } ''
-      mkdir -p $out
-      cp -R ${my-frontend-build}/* $out/
-      for THEFILE in $(grep -R '${my-frontend-config.frontend.currentServer}' $out|awk -F':' '{print $1}') do
-        sed -i 's/${my-frontend-config.frontend.currentServer}/${my-frontend-config.frontend.backendServer}/g' $THEFILE
-      done
-    '';
+  # the frontend, comment out for now.
+  {{name}}-frontend-distributable =
+    (import ./default.nix { }).{{name}}-frontend.overrideAttrs
+    (oldAttrs: {
+      buildPhase = ''
+        # following not working, do not know why
+        # rm -fr .env.production.local .env.local .env.production
+        # echo "REACT_APP_BASE_URL=http://${my-frontend-config.api-gw.serverName}:${
+          toString my-frontend-config.api-gw.listenPort
+        }" > .env.production
+        sed -i 's/{process.env.REACT_APP_BASE_URL}/http:\/\/${my-frontend-config.api-gw.serverName}:${
+          toString my-frontend-config.api-gw.listenPort
+        }/g' src/dataprovider.js
+        sed -i 's/{process.env.REACT_APP_BASE_URL}/http:\/\/${my-frontend-config.api-gw.serverName}:${
+          toString my-frontend-config.api-gw.listenPort
+        }/g' src/auth.js
+      '' + oldAttrs.buildPhase;
+    });
 
-in rec {
-  inherit nativePkgs pkgs {{name}}-frontend-config;
-
-  mk-my-{{name}}-frontend-reference =
-    nPkgs.writeReferencesToFile my-frontend-distributable;
-  mk-my-rabbitmq-deploy-sh = deploy-packer.mk-deploy-sh {
-    env = my-messaging-env.messaging;
-    payloadPath = setup-and-unsetup-or-bin-sh;
-    inherit innerTarballName;
-    execName = "rabbitmq";
-  };
-  mk-my-rabbitmq-cleanup-sh = deploy-packer.mk-cleanup-sh {
-    env = my-messaging-env.messaging;
-    payloadPath = setup-and-unsetup-or-bin-sh;
-    inherit innerTarballName;
-    execName = "rabbitmq";
-  };
-  mk-my-release-packer = deploy-packer.mk-release-packer {
-    referencePath = mk-my-rabbitmq-reference;
-    component = pkgName;
-    inherit site phase innerTarballName;
-    deployScript = mk-my-rabbitmq-deploy-sh;
-    cleanupScript = mk-my-rabbitmq-cleanup-sh;
-  };
-}
+in {{name}}-frontend-distributable

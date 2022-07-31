@@ -1,65 +1,22 @@
 import * as React from 'react';
-import { AnchorHTMLAttributes, memo, FC } from 'react';
-import get from 'lodash/get';
-import { Typography, Link } from '@material-ui/core';
-import { useRecordContext } from 'ra-core';
-import { sanitizeFieldRestProps, PublicFieldProps, InjectedFieldProps, fieldPropTypes } from 'react-admin';
-import { makeStyles } from '@material-ui/core/styles';
-import LaunchIcon from '@material-ui/icons/Launch';
+import { Link } from '@mui/material';
+import { useRecordContext } from 'react-admin';
+import LaunchIcon from '@mui/icons-material/Launch';
 
-const useStyles = makeStyles({
-    link: {
-        textDecoration: 'none',
-    },
-    icon: {
-        width: '0.5em',
-        height: '0.5em',
-        paddingLeft: 2,
-    },
-});
+const UrlFieldWithCustomLinkText = ({ source }) => {
+    const record = useRecordContext();
 
-const UrlFieldWithCustomLinkText: FC<UrlFieldWithCustomLinkTextProps> = memo(props => {
-    const { className, emptyText, source, linkText, ...rest } = props;
-    const record = useRecordContext(props);
-    const value = get(record, source);
-    const classes = useStyles();
-
-    if (value == null) {
-        return (
-            <Typography
-                component="span"
-                variant="body2"
-                className={className}
-                {...sanitizeFieldRestProps(rest)}
-            >
-                {emptyText}
-            </Typography>
-        );
-    }
-
-    return (
+    return record ? (
         <Link
-          className={classes.link}
-            href={value}
+            href={record[source]}
+            sx={% raw %}{{ textDecoration: 'none' }}{% endraw %}
             variant="body2"
-            {...sanitizeFieldRestProps(rest)}
         >
-            {linkText}
-          <LaunchIcon className={classes.icon} />
+            {record[source]}
+            <LaunchIcon sx={% raw %}{{ width: '0.5em', height: '0.5em', paddingLeft: 2 }}{% endraw %} />
         </Link>
-    );
-});
-
-UrlFieldWithCustomLinkText.defaultProps = {
-    addLabel: true,
+    ) : null;
 };
 
-UrlFieldWithCustomLinkText.propTypes = fieldPropTypes;
-UrlFieldWithCustomLinkText.displayName = 'UrlFieldWithCustomLinkText';
-
-export interface UrlFieldWithCustomLinkTextProps
-    extends PublicFieldProps,
-        InjectedFieldProps,
-        AnchorHTMLAttributes<HTMLAnchorElement> {}
 
 export default UrlFieldWithCustomLinkText;
