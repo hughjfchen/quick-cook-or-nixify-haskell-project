@@ -21,17 +21,17 @@ if ! type nix-build >/dev/null 2>&1; then
       debian)
         [[ -e /proc/sys/kernel/unprivileged_userns_clone ]] && sudo sysctl kernel.unprivileged_userns_clone=1
         curl -L https://nixos.org/nix/install | sh
-	      ;;
+        ;;
       ubuntu)
         [[ -e /proc/sys/kernel/unprivileged_userns_clone ]] && sudo sysctl kernel.unprivileged_userns_clone=1
         curl -L https://nixos.org/nix/install | sh
-	      ;;
+        ;;
       Darwin)
         curl -L https://nixos.org/nix/install | sh
-	      ;;
+        ;;
       rhel|centos)
         curl -L https://nixos.org/releases/nix/nix-2.4/install | sh
-	      ;;
+        ;;
       *) ;;
     esac
     set +u
@@ -43,9 +43,11 @@ fi
 # add iohk binary cache
 if ! [ -f ~/.config/nix/nix.conf ] || ! grep "hydra.iohk.io" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
   mkdir -p ~/.config/nix
-  echo "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" >> ~/.config/nix/nix.conf
-  echo "substituters = https://cache.nixos.org/ https://hydra.iohk.io" >> ~/.config/nix/nix.conf
-  echo "experimental-features = nix-command" >> ~/.config/nix/nix.conf
+  {
+    echo "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" ;
+    echo "substituters = https://cache.nixos.org/ https://hydra.iohk.io" ;
+    echo "experimental-features = nix-command"
+  } >> ~/.config/nix/nix.conf
 fi
 
 # in China, use the TUNA mirror for Nix binary cache

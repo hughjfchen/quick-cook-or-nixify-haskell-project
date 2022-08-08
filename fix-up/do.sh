@@ -14,10 +14,10 @@ begin_banner "Top level" "fix up"
 
 # define a function to fix-up the paths based on different template name
 function fix_up_paths_based_on_template_name () {
-	local PROJECT_NAME_REAL_PATH
-  	PROJECT_NAME_REAL_PATH=${3//$1/$COMPPATH}
-  	#PROJECT_NAME_REAL_PATH=$(echo "$3" | sed "s/$1/$COMPPATH/g")
-  	mv "$3" "${PROJECT_NAME_REAL_PATH}"
+        local PROJECT_NAME_REAL_PATH
+        PROJECT_NAME_REAL_PATH=${3//$1/$COMPPATH}
+        #PROJECT_NAME_REAL_PATH=$(echo "$3" | sed "s/$1/$COMPPATH/g")
+        mv "$3" "${PROJECT_NAME_REAL_PATH}"
 }
 export -f fix_up_paths_based_on_template_name
 
@@ -31,16 +31,16 @@ fi
 PROJECT_PASCAL_NAME=$(cat "$1/$COMPPATH/.project.pascal.name")
 PROJECT_SNAKE_NAME=$(cat "$1/$COMPPATH/.project.snake.name")
 while read -r PROJECT_ORIG_NAME_PATH; do
-	#[[ -n "${PROJECT_ORIG_NAME_PATH}" ]] && mv "${PROJECT_ORIG_NAME_PATH}" $(echo "${PROJECT_ORIG_NAME_PATH}" | sed "s/project.orig.name/$COMPPATH/g")
-	[[ -n "${PROJECT_ORIG_NAME_PATH}" ]] && mv "${PROJECT_ORIG_NAME_PATH}" "${PROJECT_ORIG_NAME_PATH//project.orig.name/$2}"
+    #[[ -n "${PROJECT_ORIG_NAME_PATH}" ]] && mv "${PROJECT_ORIG_NAME_PATH}" $(echo "${PROJECT_ORIG_NAME_PATH}" | sed "s/project.orig.name/$COMPPATH/g")
+    [[ -n "${PROJECT_ORIG_NAME_PATH}" ]] && mv "${PROJECT_ORIG_NAME_PATH}" "${PROJECT_ORIG_NAME_PATH//project.orig.name/$2}"
 done <<< "$(find "$1/$COMPPATH" -name "*project.orig.name*" ! -wholename "$1/$COMPPATH/.project.orig.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
 while read -r PROJECT_SNAKE_NAME_PATH; do
-	#[[ -n "${PROJECT_SNAKE_NAME_PATH}" ]] && mv "${PROJECT_SNAKE_NAME_PATH}" $(echo "${PROJECT_SNAKE_NAME_PATH}" | sed "s/project.snake.name/${PROJECT_SNAKE_NAME}/g")
-	[[ -n "${PROJECT_SNAKE_NAME_PATH}" ]] && mv "${PROJECT_SNAKE_NAME_PATH}" "${PROJECT_SNAKE_NAME_PATH//project.snake.name/${PROJECT_SNAKE_NAME}}"
+    #[[ -n "${PROJECT_SNAKE_NAME_PATH}" ]] && mv "${PROJECT_SNAKE_NAME_PATH}" $(echo "${PROJECT_SNAKE_NAME_PATH}" | sed "s/project.snake.name/${PROJECT_SNAKE_NAME}/g")
+    [[ -n "${PROJECT_SNAKE_NAME_PATH}" ]] && mv "${PROJECT_SNAKE_NAME_PATH}" "${PROJECT_SNAKE_NAME_PATH//project.snake.name/${PROJECT_SNAKE_NAME}}"
 done <<< "$(find "$1/$COMPPATH" -name "*project.snake.name*" ! -wholename "$1/$COMPPATH/.project.snake.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
 while read -r PROJECT_PASCAL_NAME_PATH; do
-	#[[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" $(echo "${PROJECT_PASCAL_NAME_PATH}" | sed "s/project.pascal.name/${PROJECT_PASCAL_NAME}/g")
-	[[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" "${PROJECT_PASCAL_NAME_PATH//project.pascal.name/${PROJECT_PASCAL_NAME}}"
+    #[[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" $(echo "${PROJECT_PASCAL_NAME_PATH}" | sed "s/project.pascal.name/${PROJECT_PASCAL_NAME}/g")
+    [[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" "${PROJECT_PASCAL_NAME_PATH//project.pascal.name/${PROJECT_PASCAL_NAME}}"
 done <<< "$(find "$1/$COMPPATH" -name "*project.pascal.name*" ! -wholename "$1/$COMPPATH/.project.pascal.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
 
 [[ -f "$1/$COMPPATH/develop" ]] && chmod +x "$1/$COMPPATH/develop"
@@ -56,10 +56,10 @@ find "$1/$COMPPATH" -type d -name bin -exec chmod -R +x {} \;
 
 # run the fixup for the specific template
 if [[ -f "$1/$COMPPATH/fixup" ]]; then
-	MY_PWD_FOR_FIXUP="$(pwd)"
-	cd "$1/$COMPPATH"
-	bash ./fixup
-	cd "${MY_PWD_FOR_FIXUP}"
+    MY_PWD_FOR_FIXUP="$(pwd)"
+    cd "$1/$COMPPATH" || exit 225
+    bash ./fixup
+    cd "${MY_PWD_FOR_FIXUP}" || exit 225
 fi
 [[ -f "$1/$COMPPATH/project.yml.orig" ]] && rm -fr "$1/$COMPPATH/project.yml.orig"
 [[ -f "$1/$COMPPATH/project.yml" ]] && rm -fr "$1/$COMPPATH/project.yml"
@@ -69,9 +69,9 @@ fi
 function reverse_project_info_for_rob () {
         local TEMPLATE_NAME
         TEMPLATE_NAME=$(basename "$3")
-  	    cp "$3/project.yml.orig" "$3/project.yml"
-  	#sed -i "s/MY_PROJECT_NAME/$COMPPATH/g" "${TEMPLATE_PATH}/project.yml"
-  	#"${SCRIPT_ABS_PATH}"/../project-scaffold-template/rob remove
+        cp "$3/project.yml.orig" "$3/project.yml"
+        #sed -i "s/MY_PROJECT_NAME/$COMPPATH/g" "${TEMPLATE_PATH}/project.yml"
+        #"${SCRIPT_ABS_PATH}"/../project-scaffold-template/rob remove
 }
 # export the above function so that can be used by other command or subshell
 export -f reverse_project_info_for_rob

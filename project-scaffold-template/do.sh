@@ -17,11 +17,11 @@ set -u
 
 # define a function to handle paths which are provided by a find command
 function prepare_project_info_for_rob () {
-	local TEMPLATE_NAME
-    	TEMPLATE_NAME=$(basename "$3")
-	cp "$3/project.yml.orig" "$3/project.yml"
-	sed -i "s/MY_PROJECT_NAME/$2/g" "$3/project.yml"
-    	"$1"/rob add "${TEMPLATE_NAME}" "$3"
+    local TEMPLATE_NAME
+    TEMPLATE_NAME=$(basename "$3")
+    cp "$3/project.yml.orig" "$3/project.yml"
+    sed -i "s/MY_PROJECT_NAME/$2/g" "$3/project.yml"
+    "$1"/rob add "${TEMPLATE_NAME}" "$3"
 }
 # export the above function so that can be used by other command or subshell
 export -f prepare_project_info_for_rob
@@ -30,7 +30,7 @@ case ${THE_DISTRIBUTION_ID} in
   debian|ubuntu|rhel|centos)
     SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
     mkdir -p "$1/$2"
-    cd "$1/$2"
+    cd "$1/$2" || exit 225
     find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}" -exec bash -c 'prepare_project_info_for_rob "$0" "$1" "$2"' "${SCRIPT_ABS_PATH}" "$2" {} \;
     "${SCRIPT_ABS_PATH}"/rob new
     if [ -f "./nix/sources.json" ]; then
@@ -53,11 +53,36 @@ case ${THE_DISTRIBUTION_ID} in
             rm -fr "$NIVSRCTMP"
         fi
     fi
-    cd - > /dev/null
+    cd - > /dev/null || exit 225
     ;;
   *)
-    nix-shell '<nixpkgs>' -p haskellPackages.rob niv --run "mkdir -p $1/$2; cd $1/$2; rob new; niv update"
-    #nix-shell '<nixpkgs>' -p hello --run "mkdir -p $1/$2; hello"
+    nix-env -i haskellPackages.rob haskellPackages.niv
+    SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
+    mkdir -p "$1/$2"
+    cd "$1/$2" || exit 225
+    find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}" -exec bash -c 'prepare_project_info_for_rob "$0" "$1" "$2"' "${SCRIPT_ABS_PATH}" "$2" {} \;
+    rob new
+    if [ -f "./nix/sources.json" ]; then
+        niv update
+    else
+        NIVSRCDIR=$(dirname "$(find . -name "sources.json"|head -1)")
+        if [ "X$NIVSRCDIR" != "X" ] && [ -f "$NIVSRCDIR/sources.nix" ]; then
+            NIVSRCTMP=$(mktemp -d)
+            mkdir -p "$NIVSRCTMP/nix"
+            cp "$NIVSRCDIR/sources.json" "$NIVSRCTMP/nix/sources.json"
+            cp "$NIVSRCDIR/sources.nix" "$NIVSRCTMP/nix/sources.nix"
+            ln -sf "$NIVSRCTMP/nix" ./nix
+            niv update
+            for COMP_DIR in $(dirname $(find "." -name "sources.json"))
+            do
+                cp "$NIVSRCTMP/nix/sources.json" "$COMP_DIR"
+                cp "$NIVSRCTMP/nix/sources.nix" "$COMP_DIR"
+            done
+            rm -fr ./nix
+            rm -fr "$NIVSRCTMP"
+        fi
+    fi
+    cd - > /dev/null || exit 225
     ;;
 esac
 
@@ -78,8 +103,5 @@ fi
 [[ -d "$1/$2" ]] && chmod go-w "$1/$2"
 [[ -d "$1/$2/project.orig.name" ]] && chmod go-w "$1/$2/project.orig.name"
 
-#[[ -f "$1/$2/cabal.project" ]] && echo "index-state : $(nix eval --quiet --raw \"(import $1/$2/default.nix {}).pkgs.haskell-nix.internalHackageIndexSate)\"" >> "$1/$2/cabal.project"
-
-#nix-shell '<nixpkgs>' -p haskellPackages.summoner --run "mkdir -p $1; cd $1; summon new $2"
 
 done_banner "Top level" "project scaffold based on template"
