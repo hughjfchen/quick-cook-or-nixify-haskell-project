@@ -43,8 +43,11 @@ fi
 # add iohk binary cache
 if ! [ -f ~/.config/nix/nix.conf ] || ! grep "hydra.iohk.io" ~/.config/nix/nix.conf > /dev/null 2>&1 ; then
   mkdir -p ~/.config/nix
-  echo "trusted-public-keys = hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" >> ~/.config/nix/nix.conf
-  echo "substituters = https://hydra.iohk.io" >> ~/.config/nix/nix.conf
+  {
+    echo "trusted-public-keys = cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY= hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ=" ;
+    echo "substituters = https://cache.nixos.org/ https://hydra.iohk.io" ;
+    echo "experimental-features = nix-command"
+  } >> ~/.config/nix/nix.conf
 fi
 
 # in Chian, use the TUNA mirror for Nix binary cache
