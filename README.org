@@ -7,7 +7,7 @@
 
 This is a tool which can help you quickly generate a haskell project based on best practice to structure your program and with the [[https://nixos.org][nix]] and [[https://github.com/input-output-hk/haskell.nix][haskell.nix]] as the build framework and [[https://docker.io][docker]], [[https://docs.docker.com/compose][docker-compose,]] [[https://github.com/hercules-ci/arion][arion-compose]]] and my own [[https://github.com/hughjfchen/deploy-packer][deploy-packer]] as the deployment framework.
 
-* Motivation
+* Why you would like this?
 
 We want to write code as quickly as possible when we build an application. However, the reality is that we need to build the application and deploy it for testing. Without the build and deploy, we can't test it(even for unit testing). And without testing, we don't know if our application works as expected. So we need to put a lot of effort to make our application build and deploy for testing. Fortunately, we can reduce the effort by generating the build and deploy infrastructure for our application. Furthermore, our application need to follow some best practice to structure our source code for maintenance. And this can also achieve by generating project based on a template.
 
