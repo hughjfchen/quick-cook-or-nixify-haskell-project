@@ -17,8 +17,8 @@ if [ $# != 2 ]; then
     echo "usage: $(basename "$0") deployTargetSite releasePhase"
     exit 125
 fi
-[ -d "$SCRIPT_ABS_PATH/../env/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/../env/site/$1/phase/$2 not exists" && exit 126)
-[ -d "$SCRIPT_ABS_PATH/../config/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/../config/site/$1/phase/$2 not exists" && exit 126)
+[ -d "$SCRIPT_ABS_PATH/env/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/env/site/$1/phase/$2 not exists" && exit 126)
+[ -d "$SCRIPT_ABS_PATH/config/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/config/site/$1/phase/$2 not exists" && exit 126)
 
 set +u
 [ -e "$HOME"/.nix-profile/etc/profile.d/nix.sh ] && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
