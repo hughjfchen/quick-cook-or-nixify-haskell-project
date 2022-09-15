@@ -28,11 +28,11 @@ let
     (builtins.fetchGit { url = "https://github.com/hughjfchen/deploy-env"; }) {
       pkgs = nPkgs;
       modules = [
-        ./env/site/${site}/phase/${phase}/db.nix
-        ./env/site/${site}/phase/${phase}/db-gw.nix
-        ./env/site/${site}/phase/${phase}/api-gw.nix
-        ./env/site/${site}/phase/${phase}/messaging.nix
-        ./env/site/${site}/phase/${phase}/{{name}}.nix
+        ../env/site/${site}/phase/${phase}/db.nix
+        ../env/site/${site}/phase/${phase}/db-gw.nix
+        ../env/site/${site}/phase/${phase}/api-gw.nix
+        ../env/site/${site}/phase/${phase}/messaging.nix
+        ../env/site/${site}/phase/${phase}/{{name}}.nix
       ];
     }).env;
 
@@ -42,11 +42,11 @@ let
   }) {
     pkgs = nPkgs;
     modules = [
-      ./config/site/${site}/phase/${phase}/db.nix
-      ./config/site/${site}/phase/${phase}/db-gw.nix
-      ./config/site/${site}/phase/${phase}/api-gw.nix
-      ./config/site/${site}/phase/${phase}/messaging.nix
-      ./config/site/${site}/phase/${phase}/{{name}}.nix
+      ../config/site/${site}/phase/${phase}/db.nix
+      ../config/site/${site}/phase/${phase}/db-gw.nix
+      ../config/site/${site}/phase/${phase}/api-gw.nix
+      ../config/site/${site}/phase/${phase}/messaging.nix
+      ../config/site/${site}/phase/${phase}/{{name}}.nix
     ];
     env = {{name}}-env;
   }).config;

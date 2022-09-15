@@ -3,8 +3,8 @@
 {
   imports = [ ./db.nix ./api-gw.nix ];
 
-  config = lib.mkIf config.runner.enable {
-    runner = {
+  config = lib.mkIf config.{{name}}.enable {
+    {{name}} = {
       "command" = "Start";
       "database.host" = "${config.db.host}";
       "database.port" = config.db.port;

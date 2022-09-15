@@ -43,6 +43,36 @@ while read -r PROJECT_PASCAL_NAME_PATH; do
     [[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" "${PROJECT_PASCAL_NAME_PATH//project.pascal.name/${PROJECT_PASCAL_NAME}}"
 done <<< "$(find "$1/$COMPPATH" -name "*project.pascal.name*" ! -wholename "$1/$COMPPATH/.project.pascal.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
 
+if [[ -d "$1/$2/env" ]]; then
+  while read -r PROJECT_ORIG_NAME_PATH; do
+    #[[ -n "${PROJECT_ORIG_NAME_PATH}" ]] && mv "${PROJECT_ORIG_NAME_PATH}" $(echo "${PROJECT_ORIG_NAME_PATH}" | sed "s/project.orig.name/$COMPPATH/g")
+    [[ -n "${PROJECT_ORIG_NAME_PATH}" ]] && mv "${PROJECT_ORIG_NAME_PATH}" "${PROJECT_ORIG_NAME_PATH//project.orig.name/$2}"
+  done <<< "$(find "$1/$2/env" -name "*project.orig.name*" ! -wholename "$1/$2/env/.project.orig.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
+  while read -r PROJECT_SNAKE_NAME_PATH; do
+    #[[ -n "${PROJECT_SNAKE_NAME_PATH}" ]] && mv "${PROJECT_SNAKE_NAME_PATH}" $(echo "${PROJECT_SNAKE_NAME_PATH}" | sed "s/project.snake.name/${PROJECT_SNAKE_NAME}/g")
+    [[ -n "${PROJECT_SNAKE_NAME_PATH}" ]] && mv "${PROJECT_SNAKE_NAME_PATH}" "${PROJECT_SNAKE_NAME_PATH//project.snake.name/${PROJECT_SNAKE_NAME}}"
+  done <<< "$(find "$1/$2/env" -name "*project.snake.name*" ! -wholename "$1/$2/env/.project.snake.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
+  while read -r PROJECT_PASCAL_NAME_PATH; do
+    #[[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" $(echo "${PROJECT_PASCAL_NAME_PATH}" | sed "s/project.pascal.name/${PROJECT_PASCAL_NAME}/g")
+    [[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" "${PROJECT_PASCAL_NAME_PATH//project.pascal.name/${PROJECT_PASCAL_NAME}}"
+  done <<< "$(find "$1/$2/env" -name "*project.pascal.name*" ! -wholename "$1/$2/env/.project.pascal.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
+fi
+
+if [[ -d "$1/$2/config" ]]; then
+  while read -r PROJECT_ORIG_NAME_PATH; do
+    #[[ -n "${PROJECT_ORIG_NAME_PATH}" ]] && mv "${PROJECT_ORIG_NAME_PATH}" $(echo "${PROJECT_ORIG_NAME_PATH}" | sed "s/project.orig.name/$COMPPATH/g")
+    [[ -n "${PROJECT_ORIG_NAME_PATH}" ]] && mv "${PROJECT_ORIG_NAME_PATH}" "${PROJECT_ORIG_NAME_PATH//project.orig.name/$2}"
+  done <<< "$(find "$1/$2/config" -name "*project.orig.name*" ! -wholename "$1/$2/config/.project.orig.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
+  while read -r PROJECT_SNAKE_NAME_PATH; do
+    #[[ -n "${PROJECT_SNAKE_NAME_PATH}" ]] && mv "${PROJECT_SNAKE_NAME_PATH}" $(echo "${PROJECT_SNAKE_NAME_PATH}" | sed "s/project.snake.name/${PROJECT_SNAKE_NAME}/g")
+    [[ -n "${PROJECT_SNAKE_NAME_PATH}" ]] && mv "${PROJECT_SNAKE_NAME_PATH}" "${PROJECT_SNAKE_NAME_PATH//project.snake.name/${PROJECT_SNAKE_NAME}}"
+  done <<< "$(find "$1/$2/config" -name "*project.snake.name*" ! -wholename "$1/$2/config/.project.snake.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
+  while read -r PROJECT_PASCAL_NAME_PATH; do
+    #[[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" $(echo "${PROJECT_PASCAL_NAME_PATH}" | sed "s/project.pascal.name/${PROJECT_PASCAL_NAME}/g")
+    [[ -n "${PROJECT_PASCAL_NAME_PATH}" ]] && mv "${PROJECT_PASCAL_NAME_PATH}" "${PROJECT_PASCAL_NAME_PATH//project.pascal.name/${PROJECT_PASCAL_NAME}}"
+  done <<< "$(find "$1/$2/config" -name "*project.pascal.name*" ! -wholename "$1/$2/config/.project.pascal.name" | awk '{ print length() "|" $0 | "sort -nr | cut -f2 -d\"|\""}')"
+fi
+
 find "$1/$2" -name develop -exec chmod +x {} \;
 find "$1/$2" -name build -exec chmod +x {} \;
 find "$1/$2" -name deploy -exec chmod +x {} \;
