@@ -45,7 +45,6 @@ set -u
 if [ "$PACK_MODE" == "full" ]; then
     # clean up the reference so that let the packer do a full pack
     rm -fr "/nix/var/reference-file/my-rabbitmq-$1-$2.reference"
-    rm -fr "/nix/var/reference-file-static/my-rabbitmq-$1-$2/my-rabbitmq-$1-$2.reference"
     rm -fr "/nix/var/reference-file-static/my-rabbitmq-$1-$2"
 fi
 
