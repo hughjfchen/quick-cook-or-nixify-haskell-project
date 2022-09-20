@@ -13,16 +13,41 @@ SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
 
 begin_banner "Top level" "project deploy - generic"
 
-if [ $# != 2 ]; then
-    echo "usage: $(basename "$0") deployTargetSite releasePhase"
+# the default pack mode is full, i.e., pack full dependencies
+# there are two passible value for this option:
+# full - means pack the binary and its all dependencies
+# incremental - means only pack the changed derivations
+PACK_MODE="full"
+
+if [ $# == 2 ] || [ $# == 3 ]; then
+    if [ $# == 3 ]; then
+        if [ "$3" == "full" ] || [ "$3" == "incremental" ]; then
+            PACK_MODE="$3"
+        else
+            echo "usage: $(basename "$0") deployTargetSite releasePhase <pack mode>"
+            echo "the <pack mode> could only be 'full' or 'incremental'."
+            exit 126
+        fi
+    fi
+else
+    echo "usage: $(basename "$0") deployTargetSite releasePhase <pack mode>"
+    echo "the <pack mode> is optional, it could be 'full' or 'incremental', the default is 'full'."
     exit 125
 fi
+
 [ -d "$SCRIPT_ABS_PATH/../env/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/../env/site/$1/phase/$2 not exists" && exit 126)
 [ -d "$SCRIPT_ABS_PATH/../config/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/../config/site/$1/phase/$2 not exists" && exit 126)
 
 set +u
 [ -e "$HOME"/.nix-profile/etc/profile.d/nix.sh ] && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
 set -u
+
+if [ "$PACK_MODE" == "full" ]; then
+    # clean up the reference so that let the packer do a full pack
+    rm -fr "/nix/var/reference-file/my-postgrest-$1-$2.reference"
+    rm -fr "/nix/var/reference-file-static/my-postgrest-$1-$2/my-postgrest-$1-$2.reference"
+    rm -fr "/nix/var/reference-file-static/my-postgrest-$1-$2"
+fi
 
 # build the boundle for the specific release target
 nix-build ./release.nix --arg site \""$1"\" --arg phase \""$2"\" --attr "mk-my-release-packer" --out-link "mk-my-release-packer"
