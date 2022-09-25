@@ -5,6 +5,7 @@ if ! type dirname > /dev/null 2>&1; then
     exit 1
 fi
 
+# ShellCheck source=/dev/null
 . "$(dirname "$0")"/common/common.sh
 
 usage_and_exit () {
@@ -83,20 +84,12 @@ case $3 in
          cp "${quick_cook_nixify_tmp_dir}/$2/.ghci" "$1/$2"
          [ -f "$1/$2/.hlint.yaml" ] && mv "$1/$2/.hlint.yaml" "$1/$2/.hlint.yaml.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          cp "${quick_cook_nixify_tmp_dir}/$2/.hlint.yaml" "$1/$2"
-         [ -f "$1/$2/.I.am.here.to.indicate.this.is.the.building.machine" ] && mv "$1/$2/.I.am.here.to.indicate.this.is.the.building.machine" "$1/$2/.I.am.here.to.indicate.this.is.the.building.machine.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/.I.am.here.to.indicate.this.is.the.building.machine" "$1/$2"
          [ -f "$1/$2/develop" ] && mv "$1/$2/develop" "$1/$2/develop.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          cp "${quick_cook_nixify_tmp_dir}/$2/develop" "$1/$2"
          [ -f "$1/$2/build" ] && mv "$1/$2/build" "$1/$2/build.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          cp "${quick_cook_nixify_tmp_dir}/$2/build" "$1/$2"
          [ -f "$1/$2/deploy" ] && mv "$1/$2/deploy" "$1/$2/deploy.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          cp "${quick_cook_nixify_tmp_dir}/$2/deploy" "$1/$2"
-         [ -f "$1/$2/deploy-to-local-docker-compose" ] && mv "$1/$2/deploy-to-local-docker-compose" "$1/$2/deploy-to-local-docker-compose.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/deploy-to-local-docker-compose" "$1/$2"
-         [ -f "$1/$2/deploy-to-test-vm" ] && mv "$1/$2/deploy-to-test-vm" "$1/$2/deploy-to-test-vm.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/deploy-to-test-vm" "$1/$2"
-         [ -f "$1/$2/deploy-to-production-vm" ] && mv "$1/$2/deploy-to-production-vm" "$1/$2/deploy-to-production-vm.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/deploy-to-production-vm" "$1/$2"
          [ -f "$1/$2/arion" ] && mv "$1/$2/arion" "$1/$2/arion.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          cp "${quick_cook_nixify_tmp_dir}/$2/arion" "$1/$2"
 	     # for executables, we need to copy to override them after applying tempalte(Why?)
