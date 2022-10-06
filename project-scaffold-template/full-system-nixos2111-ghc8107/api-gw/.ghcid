@@ -1,0 +1,1 @@
+--command="cabal new-repl {{name}}:exe:{{name}}" --test=":!cabal new-test {{name}}:test:{{name}}-test"
