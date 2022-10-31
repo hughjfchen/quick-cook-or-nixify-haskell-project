@@ -56,13 +56,13 @@ Following these steps to use this tool:
 1. clone the repository.
 2. to generate a project skeleton from scratch, run the following command under the clone directory:
    #+begin_src sh
-./cook.sh <the directory where the project will be put> <the name of the project> <generate|template>
+./cook.sh <the directory where the project will be put> <the name of the project> generate|template
  - generate means generate new project with summon(deprecated, not recommended)
  - template means create project based on existing template
    #+end_src
 3. to nixify an existing project, run the following command under the clone directory:
    #+begin_src sh
-./nixify.sh <the parent directory of the existing project> <the name of the existing project> <template>
+./nixify.sh <the parent directory of the existing project> <the name of the existing project> template
  - template means nixify the existing project based on template
    #+end_src
 4. follow the prompt of the screen til everything is done. usually, you just press enter
