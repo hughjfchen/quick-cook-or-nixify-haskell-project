@@ -152,7 +152,7 @@ init_without_root_or_sudo () {
 get_last_stable_nix_channel () {
     local MY_CHANNEL_NAME_REGEX=""
     case ${THE_DISTRIBUTION_ID} in
-      debian|ubuntu|rhel|centos) MY_CHANNEL_NAME_REGEX='s/.*\(nixos-[0-9][0-9].[0-9][0-9]\).*/\1/p' ;;
+      debian|ubuntu|rhel|centos|nixos) MY_CHANNEL_NAME_REGEX='s/.*\(nixos-[0-9][0-9].[0-9][0-9]\).*/\1/p' ;;
       Darwin) MY_CHANNEL_NAME_REGEX='s/.*\(nixpkgs-[0-9][0-9].[0-9][0-9]-darwin\).*/\1/p' ;;
       *) ;;
     esac

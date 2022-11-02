@@ -47,7 +47,7 @@ MY_CHANNEL_NUM=$(echo "${MY_CHANNEL}" | awk -F"-" '{print $2}')
 #nix-shell '<nixpkgs>' -p haskellPackages.niv --run "cd $1/$2; niv init --no-nixpkgs; niv add NixOS/nixpkgs -n nixpkgs -b nixos-${MY_CHANNEL}; niv add NixOS/nixpkgs -n nixpkgs-darwin -b nixpkgs-${MY_CHANNEL_NUM}-darwin; niv add input-output-hk/haskell.nix"
 
 case ${THE_DISTRIBUTION_ID} in
-  debian|ubuntu|rhel|centos)
+  debian|ubuntu|rhel|centos|nixos)
     cd "$1/$2"
     "${SCRIPT_ABS_PATH}"/niv init --no-nixpkgs
     # following is for Linux

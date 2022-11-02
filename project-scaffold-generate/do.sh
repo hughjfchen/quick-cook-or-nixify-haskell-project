@@ -16,7 +16,7 @@ set +u
 set -u
 
 case ${THE_DISTRIBUTION_ID} in
-  debian|ubuntu|rhel|centos)
+  debian|ubuntu|rhel|centos|nixos)
     SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
     mkdir -p "$1"
     cd "$1"
