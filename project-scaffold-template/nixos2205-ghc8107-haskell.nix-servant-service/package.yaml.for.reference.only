@@ -1,0 +1,111 @@
+name:                {{name}}
+version:             0.1.2
+synopsis: >
+  A REST Web Api server template for building (micro)services.
+description: |
+  A REST Web Api server template, that serves as a reference
+  and avoids repetive boilerplate when building many (micro)services.
+  This combines best libraries available in Haskell web development, like RIO, warp, servant, etc.,
+  and principles around 12-factor app.
+
+  Check @'{{name|toPascal}}'@ module documentation for example.
+
+  Idea is to provide Curated & Opinionated set of packages and
+  patterns to build well designed web api applications in Haskell.
+
+  Inspiration from Python Flask, ASP.NET Core
+
+  For more details, please see the README on Github at <https://github.com/cackharot/{{name}}#readme>
+
+
+category:            Web
+github:              cackharot/{{name}}
+license:             MIT
+author:              Cackharot
+maintainer:          cackharot@gmail.com
+copyright:           2020 Cackharot
+
+extra-source-files:
+  - README.md
+
+tested-with: GHC==8.8.4 || ==8.10.7 || ==9.0.1
+
+dependencies:
+  - base >= 4.11 && < 10
+  - rio
+  - data-default
+  - data-has
+  - network-uri
+  - bytestring
+  - cryptonite
+  - jose
+  - transformers
+  - envy
+  - aeson
+  - http-types
+  - warp
+  - wai
+  - wai-extra
+  - wai-cli
+  - prometheus-client
+  - wai-middleware-prometheus
+  - prometheus-metrics-ghc
+  - servant-server # >= 0.18.2
+  - servant-auth #>= 0.4.0.0
+  - servant-auth-server #>= 0.4.6.0
+  - fast-logger
+  - iproute
+  - network
+
+ghc-options:
+  - -Wall
+  - -Wcompat
+  - -Widentities
+  - -Wincomplete-record-updates
+  - -Wincomplete-uni-patterns
+  - -Wpartial-fields
+  - -Wredundant-constraints
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - {{name|toPascal}}
+    - {{name|toPascal}}.Types
+    - {{name|toPascal}}.App
+    - {{name|toPascal}}.Config
+    - {{name|toPascal}}.Logging
+    - {{name|toPascal}}.Util
+    - {{name|toPascal}}.JWT
+    - Network.Wai.Middleware.Health
+    - Network.Wai.Middleware.Info
+
+executables:
+  {{name}}-exe:
+    main: Main.hs
+    source-dirs: app
+    dependencies:
+      - {{name}}
+      - optparse-simple
+      - dotenv
+      - unordered-containers
+
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      # - -eventlog
+      # - -prof
+      - -with-rtsopts=-N
+      - -with-rtsopts=-T
+
+tests:
+  {{name}}-test:
+    main: Spec.hs
+    source-dirs: test
+    dependencies:
+      - {{name}}
+      - hspec
+
+    ghc-options:
+      - -threaded
+      - -rtsopts
+      - -with-rtsopts=-N

@@ -1,0 +1,1 @@
+--command="cabal new-repl lib:haskell-web-api-template" --test=":!cabal new-test haskell-web-api-template:test:haskell-web-api-template-test"
