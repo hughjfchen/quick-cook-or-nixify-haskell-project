@@ -12,13 +12,15 @@ init_with_root_or_sudo "$0"
 begin_banner "Top level" "project env unprepare"
 
 set +u
-[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] \
+    && . "$HOME/.nix-profile/etc/profile.d/nix.sh"
 set -u
 
 if type nix-build >/dev/null 2>&1; then
     info "nix-build found, trying to uninstall it"
     if [ "${THE_DISTRIBUTION_ID}" == "debian" ] || [ "${THE_DISTRIBUTION_ID}" == "ubuntu" ]; then
-        [[ -e /proc/sys/kernel/unprivileged_userns_clone ]] && sudo sysctl kernel.unprivileged_userns_clone=1
+        [[ -e /proc/sys/kernel/unprivileged_userns_clone ]] \
+            && sudo sysctl kernel.unprivileged_userns_clone=1
     fi
     set +e
     sudo rm -fr /nix > /dev/null 2>&1

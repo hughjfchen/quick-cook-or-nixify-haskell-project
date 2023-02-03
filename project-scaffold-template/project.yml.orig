@@ -1,0 +1,25 @@
+questions:
+  name:
+    question: What's the name of the project?
+    type: input
+    default: MY_PROJECT_NAME
+
+  description:
+    question: Project description?
+    type: input
+    default: Please refer to https://github.com/hughjfchen/MY_PROJECT_NAME for more info.
+
+  init_version:
+    question: Initial version for this project?
+    type: input
+    default: "0.0.1.0"
+
+  nixos_release:
+    question: Which nixos release?
+    type: input
+    default: "22.05"
+
+  ghc_version:
+    question: Which GHC version?
+    type: input
+    default: "8.10.7"

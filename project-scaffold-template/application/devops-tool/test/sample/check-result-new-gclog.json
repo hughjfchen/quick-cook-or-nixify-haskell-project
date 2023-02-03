@@ -1,0 +1,48 @@
+[
+    {"hostName": "wasdev5kf",
+     "instance": "server1",
+     "no": "NA",
+     "checkRule": "Log",
+     "checkItem": "access_log_enabled",
+     "checkResult": "true",
+     "status": "OK",
+     "timestamp": "2022-08-01 09:13:50"
+    },
+    { "hostName":"wasdev01kf",
+      "instance":"server1",
+      "no":"NA",
+      "checkRule":"Log",
+      "checkItem":"path",
+      "checkResult":"/opt/nginxHome/instances/server1",
+      "status":"OK",
+      "timestamp":"2022-08-01 16:45:00"
+            },
+    { "hostName":"wasdev01kf",
+      "instance":"server2",
+      "no":"NA",
+      "checkRule":"Log",
+      "checkItem":"path",
+      "checkResult":"/opt/nginxHome/instances/server2",
+      "status":"OK",
+      "timestamp":"2022-08-01 16:45:00"
+            },
+    { "hostName":"wasdev01kf",
+      "instance":"server1",
+      "no":"NA",
+      "checkRule":"Log",
+      "checkItem":"access_log_value",
+      "checkResult":"true",
+      "status":"OK",
+      "timestamp":"2022-08-01 16:45:00"
+            },
+    { "hostName":"wasdev01kf",
+      "instance":"server2",
+      "no":"NA",
+      "checkRule":"Log",
+      "checkItem":"gclog",
+      "checkResult":"false",
+      "status":"ERROR",
+      "timestamp":"2022-08-01 16:45:00"
+            }
+
+]

@@ -8,7 +8,7 @@ fi
 . "$(dirname "$0")"/common/common.sh
 
 usage_and_exit () {
-            echo "Usage: cook.sh <project root path> <project name> <generate|template>"
+            echo "Usage: cook.sh <project parent path> <project name> <generate|template>"
             exit 1
 }
 
@@ -26,6 +26,7 @@ begin_banner "Top level" "project cooking"
 
 case $3 in
   generate)
+         warn "This method will be removed in a near future release! Use template instead"
          "${SCRIPT_ABS_PATH}"/project-scaffold-generate/do.sh "$1" "$2"
 
          "${SCRIPT_ABS_PATH}"/build-framework/do.sh "$1" "$2"
@@ -40,9 +41,6 @@ case $3 in
          "${SCRIPT_ABS_PATH}"/project-scaffold-template/do.sh "$1" "$2"
 
          "${SCRIPT_ABS_PATH}"/fix-up/do.sh "$1" "$2"
-         # for executables, we need to copy to override them after applying tempalte(Why?)
-         [[ -d "$1/$2/cd" ]] && cp "${SCRIPT_ABS_PATH}"/deployment-framework/arion "$1/$2/cd/" && chmod +x "$1/$2/cd/arion"
-         [[ -d "$1/$2/$2/cd" ]] && cp "${SCRIPT_ABS_PATH}"/deployment-framework/arion "$1/$2/$2/cd/" && chmod +x "$1/$2/$2/cd/arion"
          ;;
   *)
          ;;

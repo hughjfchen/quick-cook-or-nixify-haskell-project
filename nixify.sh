@@ -38,34 +38,21 @@ case $3 in
 
          "${SCRIPT_ABS_PATH}"/fix-up/do.sh "${quick_cook_nixify_tmp_dir}" "$2"
 
-         [ -d "$1/$2/ci" ] && mv "$1/$2/ci" "$1/$2/ci.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp -R "${quick_cook_nixify_tmp_dir}/$2/ci" "$1/$2"
-         [ -d "$1/$2/cd" ] && mv "$1/$2/cd" "$1/$2/cd.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp -R "${quick_cook_nixify_tmp_dir}/$2/cd" "$1/$2"
-         [ -d "$1/$2/nix" ] && mv "$1/$2/nix" "$1/$2/nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp -R "${quick_cook_nixify_tmp_dir}/$2/nix" "$1/$2"
-         [ -d "$1/$2/config" ] && mv "$1/$2/config" "$1/$2/config.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp -R "${quick_cook_nixify_tmp_dir}/$2/config" "$1/$2"
-         [ -f "$1/$2/default.nix" ] && mv "$1/$2/default.nix" "$1/$2/default.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/default.nix" "$1/$2"
-         [ -f "$1/$2/shell.nix" ] && mv "$1/$2/shell.nix" "$1/$2/shell.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/shell.nix" "$1/$2"
-         [ -f "$1/$2/release.nix" ] && mv "$1/$2/release.nix" "$1/$2/release.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/release.nix" "$1/$2"
-         [ -f "$1/$2/cross-build.nix" ] && mv "$1/$2/cross-build.nix" "$1/$2/cross-build.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/cross-build.nix" "$1/$2"
-         [ -f "$1/$2/docker.nix" ] && mv "$1/$2/docker.nix" "$1/$2/docker.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/docker.nix" "$1/$2"
-         [ -f "$1/$2/tarball.nix" ] && mv "$1/$2/tarball.nix" "$1/$2/tarball.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/tarball.nix" "$1/$2"
-         [ -f "$1/$2/arion-pkgs.nix" ] && mv "$1/$2/arion-pkgs.nix" "$1/$2/arion-pkgs.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/arion-pkgs.nix" "$1/$2"
-         [ -f "$1/$2/arion-compose.nix" ] && mv "$1/$2/arion-compose.nix" "$1/$2/arion-compose.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/arion-compose.nix" "$1/$2"
-         [ -f "$1/$2/hie.yaml" ] && mv "$1/$2/hie.yaml" "$1/$2/hie.yaml.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/hie.yaml" "$1/$2"
-         [ -f "$1/$2/fourmolu.yaml" ] && mv "$1/$2/fourmolu.yaml" "$1/$2/fourmolu.yaml.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/fourmolu.yaml" "$1/$2"
+         for DIR_NAME1 in "ci" "cd" "nix" "config"
+         do
+             [ -d "$1/$2/$DIR_NAME1" ] && mv "$1/$2/$DIR_NAME1" "$1/$2/$DIR_NAME1.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
+             cp -R "${quick_cook_nixify_tmp_dir}/$2/$DIR_NAME1" "$1/$2"
+         done
+
+         for FILE_NAME1 in "default.nix" "shell.nix" "release.nix" "cross-build.nix" \
+             "docker.nix" "tarball.nix" "arion-pkgs.nix" "arion-compose.nix" \
+             "hie.yaml" "fourmolu.yaml" ".gitignore" ".dir-locals.el" ".ghci" \
+             ".hlint.yaml" "develop" "build" "deploy" "arion"
+         do
+             [ -f "$1/$2/$FILE_NAME1" ] && mv "$1/$2/$FILE_NAME1" "$1/$2/$FILE_NAME1.nix.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
+             cp "${quick_cook_nixify_tmp_dir}/$2/$FILE_NAME1" "$1/$2"
+         done
+
          [ ! -f "$1/$2/cabal.project.local" ] && cp "${quick_cook_nixify_tmp_dir}/$2/cabal.project.local" "$1/$2"
          if [ -f "$1/$2/cabal.project" ]; then
              THE_INDEX_STATE=$(grep index-state "${quick_cook_nixify_tmp_dir}/$2/cabal.project")
@@ -76,30 +63,19 @@ case $3 in
          else
              cp "${quick_cook_nixify_tmp_dir}/$2/cabal.project" "$1/$2"
          fi
-         [ -f "$1/$2/.gitignore" ] && mv "$1/$2/.gitignore" "$1/$2/.gitignore.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/.gitignore" "$1/$2"
-         [ -f "$1/$2/.dir-locals.el" ] && mv "$1/$2/.dir-locals.el" "$1/$2/.dir-locals.el.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/.dir-locals.el" "$1/$2"
-         [ -f "$1/$2/.ghci" ] && mv "$1/$2/.ghci" "$1/$2/.ghci.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/.ghci" "$1/$2"
-         [ -f "$1/$2/.hlint.yaml" ] && mv "$1/$2/.hlint.yaml" "$1/$2/.hlint.yaml.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/.hlint.yaml" "$1/$2"
-         [ -f "$1/$2/develop" ] && mv "$1/$2/develop" "$1/$2/develop.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/develop" "$1/$2"
-         [ -f "$1/$2/build" ] && mv "$1/$2/build" "$1/$2/build.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/build" "$1/$2"
-         [ -f "$1/$2/deploy" ] && mv "$1/$2/deploy" "$1/$2/deploy.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/deploy" "$1/$2"
-         [ -f "$1/$2/arion" ] && mv "$1/$2/arion" "$1/$2/arion.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
-         cp "${quick_cook_nixify_tmp_dir}/$2/arion" "$1/$2"
+
 	     # for executables, we need to copy to override them after applying tempalte(Why?)
 	     cp "${SCRIPT_ABS_PATH}"/deployment-framework/arion "$1/$2/cd/" && chmod +x "$1/$2/cd/arion"
          mkdir -p "$1/$2/.github/workflows"
-         [ -f "$1/$2/.github/workflows/nix-ci.yml" ] && mv "$1/$2/.github/workflows/nix-ci.yml" "$1/$2/.github/workflows/nix-ci.yml.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
+         [ -f "$1/$2/.github/workflows/nix-ci.yml" ] \
+             && mv "$1/$2/.github/workflows/nix-ci.yml" "$1/$2/.github/workflows/nix-ci.yml.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          cp "${quick_cook_nixify_tmp_dir}/$2/.github/workflows/nix-ci.yml" "$1/$2/.github/workflows/"
 
          if [ -f "$1/$2/$2.cabal" ] && [ -f "$1/$2/stack.yaml" ]; then
              mv "$1/$2/stack.yaml" "$1/$2/stack.yaml.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
+         fi
+         if [ -f "$1/$2/$2.cabal" ] && [ -f "$1/$2/package.yaml" ]; then
+             mv "$1/$2/package.yaml" "$1/$2/package.yaml.bak.by.nixify.$(date +%Y%m%d%H%M%S)"
          fi
 	 ;;
  *)

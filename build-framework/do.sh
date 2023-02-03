@@ -33,7 +33,10 @@ echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/.dir-locals.el
 [ -d "$1/$2"/test ] && echo "((nil . ((dante-target . \"test:$2-test\"))))" > "$1/$2"/test/.dir-locals.el
 
 # setup the .ghci for great experience
-{ echo ':def hg \x -> return $ ":!hoogle \"" ++ x ++ "\""' ; echo ':def hgi \x -> return $ ":!hoogle --info \"" ++ x ++ "\""' ; echo ':def hgr \x -> return $ ":!lynx -dump -dont_wrap_pre -with_backspaces -nolist -nonumbers  \"" ++ "https://hoogle.haskell.org/?hoogle=" ++ x ++ "\""' ; } >> "$1/$2/.ghci"
+{ echo ':def hg \x -> return $ ":!hoogle \"" ++ x ++ "\""' ;
+  echo ':def hgi \x -> return $ ":!hoogle --info \"" ++ x ++ "\""' ;
+  echo ':def hgr \x -> return $ ":!lynx -dump -dont_wrap_pre -with_backspaces -nolist -nonumbers  \"" ++ "https://hoogle.haskell.org/?hoogle=" ++ x ++ "\""' ;
+} >> "$1/$2/.ghci"
 
 #update niv sources list
 set +u

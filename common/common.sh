@@ -92,11 +92,18 @@ check_dist_or_OS () {
     local MY_THE_DISTRIBUTION_ID=""
     local MY_THE_DISTRIBUTION_VERSION=""
     if [ -e /etc/os-release ]; then
-        MY_THE_DISTRIBUTION_ID=$(grep -w "ID" /etc/os-release |awk -F"=" '{print $NF}'|sed 's/"//g')
+        MY_THE_DISTRIBUTION_ID=$(grep -w "ID" /etc/os-release \
+            | awk -F"=" '{print $NF}' \
+            | sed 's/"//g')
         if [ "${MY_THE_DISTRIBUTION_ID}" == "ubuntu" ]; then
-            MY_THE_DISTRIBUTION_VERSION=$(grep -w "VERSION_ID" /etc/os-release |awk -F"=" '{print $NF}'|sed 's/"//g')
+            MY_THE_DISTRIBUTION_VERSION=$(grep -w "VERSION_ID" /etc/os-release \
+                | awk -F"=" '{print $NF}' \
+                | sed 's/"//g')
         else
-            MY_THE_DISTRIBUTION_VERSION=$(grep -w "VERSION_ID" /etc/os-release |awk -F"=" '{print $NF}'|awk -F"." '{print $1}'|sed 's/"//g')
+            MY_THE_DISTRIBUTION_VERSION=$(grep -w "VERSION_ID" /etc/os-release \
+                | awk -F"=" '{print $NF}' \
+                | awk -F"." '{print $1}' \
+                | sed 's/"//g')
         fi
         echo "${MY_THE_DISTRIBUTION_ID} ${MY_THE_DISTRIBUTION_VERSION}"
     else
@@ -124,7 +131,7 @@ init_with_root_or_sudo () {
     guard_bash_error
 
     if ! guard_root_or_sudo; then
-        my_exit "You must be root or you must be sudoer to prepare the env for CI/CD." 1
+        my_exit "You must be root or you must be sudoer to run this script." 1
     fi
 
     SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
@@ -152,12 +159,23 @@ init_without_root_or_sudo () {
 get_last_stable_nix_channel () {
     local MY_CHANNEL_NAME_REGEX=""
     case ${THE_DISTRIBUTION_ID} in
-      debian|ubuntu|rhel|centos|nixos) MY_CHANNEL_NAME_REGEX='s/.*\(nixos-[0-9][0-9].[0-9][0-9]\).*/\1/p' ;;
-      Darwin) MY_CHANNEL_NAME_REGEX='s/.*\(nixpkgs-[0-9][0-9].[0-9][0-9]-darwin\).*/\1/p' ;;
+      debian|ubuntu|rhel|centos|nixos)
+          MY_CHANNEL_NAME_REGEX='s/.*\(nixos-[0-9][0-9].[0-9][0-9]\).*/\1/p'
+          ;;
+      Darwin)
+          MY_CHANNEL_NAME_REGEX='s/.*\(nixpkgs-[0-9][0-9].[0-9][0-9]-darwin\).*/\1/p'
+          ;;
       *) ;;
     esac
     local MY_LAST_NIX_STABLE_CHANNEL
-    MY_LAST_NIX_STABLE_CHANNEL=$(git ls-remote --heads https://github.com/NixOS/nixpkgs | awk '{print $NF}' | awk -F"/" '{print $NF}' | grep -v "\-unstable" | grep -v "\-small" | sed -n "${MY_CHANNEL_NAME_REGEX}" | sort | tail -1)
+    MY_LAST_NIX_STABLE_CHANNEL=$(git ls-remote --heads https://github.com/NixOS/nixpkgs \
+        | awk '{print $NF}' \
+        | awk -F"/" '{print $NF}' \
+        | grep -v "\-unstable" \
+        | grep -v "\-small" \
+        | sed -n "${MY_CHANNEL_NAME_REGEX}" \
+        | sort \
+        | tail -1)
     echo "${MY_LAST_NIX_STABLE_CHANNEL}"
 }
 

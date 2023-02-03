@@ -1,0 +1,51 @@
+{
+    "instances": [{
+        "instance_name": "server1",
+        "service": "false",
+        "heap": "true",
+        "jolokia_policy": "true",
+        "logrotate": "true",
+        "webapps": "true",
+        "access_log_value": "false",
+        "umask_value": "true",
+        "runas_qappsom": "false",
+        "path": "/opt/nginxHome/instances/server1",
+        "jolokia_installed": "true",
+        "jolokia_passwd": "true",
+        "version_invisible": "true",
+        "server_logsize": "1 MB",
+        "gclog": "true",
+        "umask": "true",
+        "access_log_enabled": "true",
+        "shutdown": "false",
+        "group": "true",
+        "heapdump": "true",
+        "listing_disabled": "true"
+    },
+                  {
+
+        "instance_name": "server2",
+        "service": "false",
+        "heap": "false",
+        "jolokia_policy": "false",
+        "logrotate": "true",
+        "webapps": "true",
+        "access_log_value": "false",
+        "umask_value": "false",
+        "runas_qappsom": "false",
+        "path": "/opt/nginxHome/instances/server2",
+        "jolokia_installed": "false",
+        "jolokia_passwd": "false",
+        "version_invisible": "true",
+        "server_logsize": "1 MB",
+        "gclog": "false",
+        "umask": "false",
+        "access_log_enabled": "false",
+        "shutdown": "false",
+        "group": "false",
+        "heapdump": "false",
+        "listing_disabled": "true"
+    }
+
+    ]
+}

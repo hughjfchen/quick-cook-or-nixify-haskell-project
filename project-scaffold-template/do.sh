@@ -29,10 +29,51 @@ export -f prepare_project_info_for_rob
 case ${THE_DISTRIBUTION_ID} in
   debian|ubuntu|rhel|centos|nixos)
     SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
+    # clean up the template list first
+    rm -fr "$HOME/.rob"
+
+    # list the template and let user pick one or their combination
+    # all templates will be put under two directories accordingly:
+    # application or infrastructure
+
+    TEMPLATE_NAME=""
+    TEMPLATE_PATH=""
+    for TEMPLATE_CLASS in application infrastructure
+    do
+        echo "pick the template or templcate combination for the $TEMPLATE_CLASS from following:"
+        find "${SCRIPT_ABS_PATH}/$TEMPLATE_CLASS" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}/$TEMPLATE_CLASS" \
+            -exec basename {} \;
+
+        read -p "which template or template combination for the $TEMPLATE_CLASS do you want to use: " TEMP_TEMPLATE_NAME
+
+        TEMP_TEMPLATE_PATH=$(echo "$TEMP_TEMPLATE_NAME"|tr ' ' '\n'|sed "s:^:$TEMPLATE_CLASS/:g"|tr '\n' ' ')
+        TEMPLATE_NAME=$(printf "%s %s" "$TEMPLATE_NAME" "$TEMP_TEMPLATE_NAME")
+        TEMPLATE_PATH=$(printf "%s %s" "$TEMPLATE_PATH" "$TEMP_TEMPLATE_PATH")
+    done
+    # ok, combine them and create a new template
+    TEMPLATE_NAME_COMBINED=$(echo "${TEMPLATE_NAME/ /}" | tr -s ' ' | tr ' ' '-')
+    NEW_TEMPLATE_DIR="/tmp/$TEMPLATE_NAME_COMBINED"
+    mkdir -p "$NEW_TEMPLATE_DIR"
+    for TEMPLATE_DIR in $TEMPLATE_PATH
+    do
+        cp -na "$SCRIPT_ABS_PATH/$TEMPLATE_DIR"/. "$NEW_TEMPLATE_DIR"
+    done
+
+    # and copy the rob project.yml and some supporting files
+    for SUPPORTING_FILE in project.yml.orig .project.orig.name .project.snake.name .project.pascal.name
+    do
+        cp "$SCRIPT_ABS_PATH/$SUPPORTING_FILE" "$NEW_TEMPLATE_DIR"
+    done
+
+    prepare_project_info_for_rob "${SCRIPT_ABS_PATH}" "$2" "$NEW_TEMPLATE_DIR"
+
     mkdir -p "$1/$2"
     cd "$1/$2" || exit 225
-    find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}" -exec bash -c 'prepare_project_info_for_rob "$0" "$1" "$2"' "${SCRIPT_ABS_PATH}" "$2" {} \;
     "${SCRIPT_ABS_PATH}"/rob new
+
+    # do not need the template and combination any more, clean up
+    rm -fr "$NEW_TEMPLATE_DIR"
+
     if [ -f "./nix/sources.json" ]; then
         "${SCRIPT_ABS_PATH}"/niv update
     else
@@ -60,7 +101,8 @@ case ${THE_DISTRIBUTION_ID} in
     SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
     mkdir -p "$1/$2"
     cd "$1/$2" || exit 225
-    find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}" -exec bash -c 'prepare_project_info_for_rob "$0" "$1" "$2"' "${SCRIPT_ABS_PATH}" "$2" {} \;
+    find "${SCRIPT_ABS_PATH}" -maxdepth 1 -type d ! -name . ! -wholename "${SCRIPT_ABS_PATH}" \
+        -exec bash -c 'prepare_project_info_for_rob "$0" "$1" "$2"' "${SCRIPT_ABS_PATH}" "$2" {} \;
     rob new
     if [ -f "./nix/sources.json" ]; then
         niv update
@@ -89,10 +131,15 @@ esac
 # use haskell.nix internal index-state by default so that we sync cabal with nix
 if [ -f "$1/$2/cabal.project" ]; then
     if [ -f "$1/$2/project.orig.name/default.nix" ]; then
-        H_INTERNAL_INDEX_STATE=$(nix eval --impure --expr "(import $1/$2/project.orig.name/default.nix {}).pkgs.haskell-nix.internalHackageIndexState"|awk -F'"' '{print $2}')
-        [[ -f "$1/$2/project.orig.name/cabal.project" ]] && echo "index-state : $H_INTERNAL_INDEX_STATE" >> "$1/$2/project.orig.name/cabal.project"
+        H_INTERNAL_INDEX_STATE=$(nix eval --impure \
+            --expr "(import $1/$2/project.orig.name/default.nix {}).pkgs.haskell-nix.internalHackageIndexState" \
+            | awk -F'"' '{print $2}')
+        [[ -f "$1/$2/project.orig.name/cabal.project" ]] \
+            && echo "index-state : $H_INTERNAL_INDEX_STATE" >> "$1/$2/project.orig.name/cabal.project"
     else
-        H_INTERNAL_INDEX_STATE=$(nix eval --impure --expr "(import $1/$2/default.nix {}).pkgs.haskell-nix.internalHackageIndexState"|awk -F'"' '{print $2}')
+        H_INTERNAL_INDEX_STATE=$(nix eval --impure \
+            --expr "(import $1/$2/default.nix {}).pkgs.haskell-nix.internalHackageIndexState" \
+            | awk -F'"' '{print $2}')
     fi
     echo "index-state : $H_INTERNAL_INDEX_STATE" >> "$1/$2/cabal.project"
 fi

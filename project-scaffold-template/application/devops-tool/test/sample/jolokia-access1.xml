@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?><restrict><remote><host>localhost</host><host>127.0.0.1</host></remote>
+  <http>
+    <method>post</method>
+    <method>get</method>
+  </http>
+  <commands>
+    <command>read</command>
+  </commands>
+</restrict>
