@@ -54,7 +54,7 @@ do
 done
 
 # make some file executable
-for NEED_TO_FIX1 in "develop" "build" "deploy" "arion" "*.sh" "*.bash"
+for NEED_TO_FIX1 in "develop" "build" "deploy" "*.sh" "*.bash"
 do
   find "$1/$2" -name "$NEED_TO_FIX1" -exec chmod +x {} \;
 done

@@ -1,1 +1,0 @@
---command="cabal new-repl lib:{{name}} -f ghcidlibwithtest" --test="TestMain.main" --setup=":load test/Spec.hs"

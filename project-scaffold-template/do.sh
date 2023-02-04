@@ -46,9 +46,19 @@ case ${THE_DISTRIBUTION_ID} in
 
         read -p "which template or template combination for the $TEMPLATE_CLASS do you want to use: " TEMP_TEMPLATE_NAME
 
-        TEMP_TEMPLATE_PATH=$(echo "$TEMP_TEMPLATE_NAME"|tr ' ' '\n'|sed "s:^:$TEMPLATE_CLASS/:g"|tr '\n' ' ')
-        TEMPLATE_NAME=$(printf "%s %s" "$TEMPLATE_NAME" "$TEMP_TEMPLATE_NAME")
-        TEMPLATE_PATH=$(printf "%s %s" "$TEMPLATE_PATH" "$TEMP_TEMPLATE_PATH")
+        DEP_TEMPLATE=""
+        for TEMP_TEMPLATE_NAME_PART in $TEMP_TEMPLATE_NAME
+        do
+            TEMP_DEP_TEMPLATE=$(sed -n "/$TEMP_TEMPLATE_NAME_PART/p" "$SCRIPT_ABS_PATH/$TEMPLATE_CLASS/.template.dep"|awk -F':' '{print $2}')
+            [[ -n "$TEMP_DEP_TEMPLATE" ]] && DEP_TEMPLATE+=" $TEMP_DEP_TEMPLATE"
+        done
+        [[ -n "$DEP_TEMPLATE" ]] && DEP_TEMPLATE=$(echo "${DEP_TEMPLATE/ /}" | tr -s ' ' | tr ' ' '\n' | sort | uniq | tr '\n' ' '|xargs)
+        TEMPLATE_NAME+=" $TEMP_TEMPLATE_NAME"
+        [[ -n "$DEP_TEMPLATE" ]] && TEMPLATE_NAME+=" $DEP_TEMPLATE"
+        TEMP_TEMPLATE_PATH=$(echo "$TEMP_TEMPLATE_NAME"|tr ' ' '\n'|sed "s:^:$TEMPLATE_CLASS/:g"|tr '\n' ' '|xargs)
+        TEMPLATE_PATH+=" $TEMP_TEMPLATE_PATH"
+        [[ -n "$DEP_TEMPLATE" ]] && DEP_TEMP_TEMPLATE_PATH=$(echo "$DEP_TEMPLATE"|tr ' ' '\n'|sed "s:^:$TEMPLATE_CLASS/:g"|tr '\n' ' '|xargs)
+        [[ -n "$DEP_TEMPLATE" ]] && TEMPLATE_PATH+=" $DEP_TEMP_TEMPLATE_PATH"
     done
     # ok, combine them and create a new template
     TEMPLATE_NAME_COMBINED=$(echo "${TEMPLATE_NAME/ /}" | tr -s ' ' | tr ' ' '-')
