@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+
+if ! type dirname > /dev/null 2>&1; then
+    echo "Not even a linux or macOS, Windoze? We don't support it. Abort."
+    exit 1
+fi
+
+. "$(dirname "$0")"/cd/common/common.sh
+
+init_with_root_or_sudo "$0"
+
+SCRIPT_ABS_PATH=$(turn_to_absolute_path "$0")
+
+begin_banner "Top level" "project deploy - generic"
+
+# the default pack mode is full, i.e., pack full dependencies
+# there are two passible value for this option:
+# full - means pack the binary and its all dependencies
+# incremental - means only pack the changed derivations
+PACK_MODE="full"
+
+if [ $# == 2 ] || [ $# == 3 ]; then
+    if [ $# == 3 ]; then
+        if [ "$3" == "full" ] || [ "$3" == "incremental" ]; then
+            PACK_MODE="$3"
+        else
+            echo "usage: $(basename "$0") deployTargetSite releasePhase <pack mode>"
+            echo "the <pack mode> could only be 'full' or 'incremental'."
+            exit 126
+        fi
+    fi
+else
+    echo "usage: $(basename "$0") deployTargetSite releasePhase <pack mode>"
+    echo "the <pack mode> is optional, it could be 'full' or 'incremental', the default is 'full'."
+    exit 125
+fi
+
+[ -d "$SCRIPT_ABS_PATH/../env/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/../env/site/$1/phase/$2 not exists" && exit 126)
+[ -d "$SCRIPT_ABS_PATH/../config/site/$1/phase/$2" ] || (echo "Directory $SCRIPT_ABS_PATH/../config/site/$1/phase/$2 not exists" && exit 126)
+
+set +u
+[ -e "$HOME"/.nix-profile/etc/profile.d/nix.sh ] && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
+set -u
+
+if [ "$PACK_MODE" == "full" ]; then
+    # clean up the reference so that let the packer do a full pack
+    rm -fr "/nix/var/reference-file/my-{{name}}-$1-$2.reference"
+    rm -fr "/nix/var/reference-file-static/my-{{name}}-$1-$2"
+fi
+
+# build the boundle for the specific release target
+nix-build ./release.nix --arg site \""$1"\" --arg phase \""$2"\" --attr "mk-my-release-packer" --out-link "mk-my-release-packer"
+
+# pack the build artifact up with the dependencies
+"$SCRIPT_ABS_PATH/mk-my-release-packer/bin/mk-release-packer-for-$1-$2"
+
+done_banner "Top level" "project deploy - generic"
