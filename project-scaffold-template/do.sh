@@ -49,7 +49,7 @@ case ${THE_DISTRIBUTION_ID} in
         DEP_TEMPLATE=""
         for TEMP_TEMPLATE_NAME_PART in $TEMP_TEMPLATE_NAME
         do
-            TEMP_DEP_TEMPLATE=$(sed -n "/$TEMP_TEMPLATE_NAME_PART/p" "$SCRIPT_ABS_PATH/$TEMPLATE_CLASS/.template.dep"|awk -F':' '{print $2}')
+            TEMP_DEP_TEMPLATE=$(sed -n "/$TEMP_TEMPLATE_NAME_PART:/p" "$SCRIPT_ABS_PATH/$TEMPLATE_CLASS/.template.dep"|awk -F':' '{print $2}')
             [[ -n "$TEMP_DEP_TEMPLATE" ]] && DEP_TEMPLATE+=" $TEMP_DEP_TEMPLATE"
         done
         [[ -n "$DEP_TEMPLATE" ]] && DEP_TEMPLATE=$(echo "${DEP_TEMPLATE/ /}" | tr -s ' ' | tr ' ' '\n' | sort | uniq | tr '\n' ' '|xargs)
