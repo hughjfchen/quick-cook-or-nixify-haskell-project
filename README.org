@@ -23,8 +23,10 @@ This tool has following features at this moment:
 - multiple platforms supported(currently ~linux~ and ~macos~ are supported, ~windows~ with ~WSL~ may work but not tested)
 - create project based on existing project templates with [[https://github.com/GianlucaGuarini/rob][rob]]
   - currently there are one existing templates
-    - ~nixos2111-ghc8107-haskell.nix~
-    - ~full-system-nixos2111-ghc8107~
+    - ~simple-command-line~
+    - ~backend-service~
+    - ~devops-tool~
+    - ~full-system~
   - new template will be added following the tools(~nix~ and ~haskell.nix~) update
   - very easy to add new project template with new build infrastructure
 - generate most usable nix files for build and deploy, including:
@@ -59,8 +61,7 @@ Following these steps to use this tool:
    #+end_src
 3. to nixify an existing project, run the following command under the clone directory:
    #+begin_src sh
-./nixify.sh <the parent directory of the existing project> <the name of the existing project> template
- - template means nixify the existing project based on template
+./nixify.sh <the parent directory of the existing project> <the name of the existing project>
    #+end_src
 4. follow the prompt of the screen til everything is done. usually, you just press enter
 
