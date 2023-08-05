@@ -12,7 +12,7 @@ begin_banner "Top level" "project scaffold based on template"
 
 #set +u to temp work around the nix script
 set +u
-[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . $HOME/.nix-profile/etc/profile.d/nix.sh
+[[ -e $HOME/.nix-profile/etc/profile.d/nix.sh ]] && . "$HOME"/.nix-profile/etc/profile.d/nix.sh
 set -u
 
 # define a function to handle paths which are provided by a find command

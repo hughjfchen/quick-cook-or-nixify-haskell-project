@@ -21,7 +21,6 @@ Based on the above consideration, I create this project generator to quickly coo
 This tool has following features at this moment:
 - install build and deploy dependencies, including ~nix~, ~docker~, ~docker-compose~ if needed
 - multiple platforms supported(currently ~linux~ and ~macos~ are supported, ~windows~ with ~WSL~ may work but not tested)
-- generate project based on the tool ~summon~ (*deprecated*, will be removed eventually)
 - create project based on existing project templates with [[https://github.com/GianlucaGuarini/rob][rob]]
   - currently there are one existing templates
     - ~nixos2111-ghc8107-haskell.nix~
@@ -56,9 +55,7 @@ Following these steps to use this tool:
 1. clone the repository.
 2. to generate a project skeleton from scratch, run the following command under the clone directory:
    #+begin_src sh
-./cook.sh <the directory where the project will be put> <the name of the project> generate|template
- - generate means generate new project with summon(deprecated, not recommended)
- - template means create project based on existing template
+./cook.sh <the directory where the project will be put> <the name of the project>
    #+end_src
 3. to nixify an existing project, run the following command under the clone directory:
    #+begin_src sh
@@ -81,10 +78,6 @@ And if run ~deploy~ and get ~docker or docker-compose not found~, run following 
 ./cd/prepare-env/do.sh (assume you're within your project directory)
 #+end_src
 The provision process connect to the official ~nix~ web site and install ~nix~ first, it also set the default ~nix~ channel to the latest stable one. It also install the ~docker~ and ~docker-compose~ packages.
-
-** Generate haskell project (*deprecated*, not recommended)
-
-This tool uses the ~summoner~ to do this job, for more information during the project generation, please refer to the [[https://github.com/kowainik/summoner][official site]].
 
 ** Generate the build framework based on the ~haskell.nix~ infrastructure
 
